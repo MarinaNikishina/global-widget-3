@@ -23,8 +23,6 @@ import {
   Checkbox,
   Check20Icon,
   Delete12Icon,
-  Dot,
-  DotColor,
   Down12Icon,
   DragNDrop20Icon,
   Help,
@@ -33,11 +31,9 @@ import {
   Input,
   Link,
   MyApps20Icon,
-  PipelineSettings20Icon,
   Placement,
   Play12Icon,
   Right16Icon,
-  SearchInput,
   SegmentButton,
   Select,
   Sidepage,
@@ -50,6 +46,7 @@ import {
   Text,
   TextColor,
   TurnBackward20Icon,
+  useSnackbar,
   type ISelectOption,
 } from '@moysklad/uikit'
 import { asset } from '../assets'
@@ -258,7 +255,14 @@ const SOLUTIONS: SolutionItem[] = [
   },
 ]
 
-const INSTALLED_IDS = SOLUTIONS.filter((s) => s.segment === 'installed').map((s) => s.id)
+const HIDDEN_LIST_IDS = new Set<SolutionId>(['payments', 'search', 'time'])
+
+/** Решения без перехода: карточка не кликается, без ховера и шеврона. */
+const NON_INTERACTIVE_IDS = new Set<SolutionId>(['mailings'])
+
+const INSTALLED_IDS = SOLUTIONS.filter(
+  (s) => s.segment === 'installed' && !HIDDEN_LIST_IDS.has(s.id),
+).map((s) => s.id)
 const RECOMMENDED_IDS = SOLUTIONS.filter((s) => s.segment === 'recommended').map((s) => s.id)
 
 type SolutionCardProps = {
@@ -375,8 +379,8 @@ function SolutionCard({
         <div className="sol-card__title-wrap">
           <SolutionTitle title={title} />
           {showDot ? (
-            <span className="sol-card__dot">
-              <Dot color={DotColor.RED} />
+            <span className="sol-card__badge">
+              <Badge label="Требуется настройка" variant="red" />
             </span>
           ) : null}
         </div>
@@ -390,7 +394,7 @@ function SolutionCard({
             <AttachPin20Icon />
           </span>
         ) : null}
-        {!isEditing ? <Right16Icon className="sol-card__chevron" /> : null}
+        {clickable ? <Right16Icon className="sol-card__chevron" /> : null}
       </header>
       {description ? (
         <div className="sol-card__body">
@@ -433,17 +437,6 @@ const QUICK_ACTIONS: Partial<Record<NonNullable<SolutionItem['body']>, string[]>
 }
 
 /** Тексты кнопок/действий в карточке списка — для поиска «Действие или решение». */
-const CARD_ACTION_LABELS: Partial<Record<NonNullable<SolutionItem['body']>, string[]>> = {
-  payments: ['Привязать платежи', 'Привязать автоматически'],
-  search: ['Перейти', 'Поиск контрагента'],
-  time: ['Начать рабочий день', 'Завершить', 'Завершить рабочий день'],
-  'debt-settings': ['Сохранить', 'Контрагент', 'Лимит долга'],
-  'ai-settings': ['Запустить анализ заказа', 'Сохранить настройки'],
-  'order-actions': QUICK_ACTIONS['order-actions'],
-  'mailings-actions': QUICK_ACTIONS['mailings-actions'],
-  'robots-actions': QUICK_ACTIONS['robots-actions'],
-}
-
 function getQuickActions(
   item: SolutionItem,
   options?: { aiConfigured?: boolean },
@@ -453,16 +446,6 @@ function getQuickActions(
     return options?.aiConfigured ? ['Запустить анализ заказа'] : null
   }
   return QUICK_ACTIONS[item.body] ?? null
-}
-
-function getSearchableActionLabels(
-  item: SolutionItem,
-  options?: { aiConfigured?: boolean },
-): string[] {
-  if (!item.body) return []
-  const fromCard = CARD_ACTION_LABELS[item.body] ?? []
-  const fromQuick = getQuickActions(item, options) ?? []
-  return [...new Set([...fromCard, ...fromQuick])]
 }
 
 function hasFeaturePanel(item: SolutionItem): boolean {
@@ -1270,8 +1253,8 @@ export function SolutionsSidepage({
   onClose,
   initialSegment = 'installed',
 }: SolutionsSidepageProps) {
+  const { showSnackbar } = useSnackbar()
   const [segment, setSegment] = useState<string | number>(initialSegment)
-  const [query, setQuery] = useState('')
   const [searchCounterparty, setSearchCounterparty] = useState<ISelectOption | undefined>(undefined)
   const [workDayStarted, setWorkDayStarted] = useState(false)
   const [paymentsBinding, setPaymentsBinding] = useState(false)
@@ -1331,7 +1314,6 @@ export function SolutionsSidepage({
       setPaymentsBinding(false)
       setPaymentsLastAt(null)
       setSearchCounterparty(undefined)
-      setQuery('')
       if (paymentsBindTimerRef.current) {
         clearTimeout(paymentsBindTimerRef.current)
         paymentsBindTimerRef.current = null
@@ -1538,28 +1520,8 @@ export function SolutionsSidepage({
     const pinSet = new Set(pinnedIds)
     const pinnedOrdered = pinnedIds.filter((id) => segmentOrder.includes(id))
     const rest = segmentOrder.filter((id) => !pinSet.has(id))
-    const ordered = [...pinnedOrdered, ...rest]
-    const q = query.trim().toLowerCase()
-    if (!q) return ordered
-
-    return ordered.filter((id) => {
-      const item = solutionsById.get(id)
-      if (!item) return false
-      const actions = getSearchableActionLabels(item, {
-        aiConfigured: isAiSettingsConfigured,
-      })
-      const haystack = [item.title, item.description ?? '', ...actions].join(' ').toLowerCase()
-      return haystack.includes(q)
-    })
-  }, [
-    activeSegment,
-    orderBySegment,
-    pinnedIds,
-    segmentOverrides,
-    solutionsById,
-    query,
-    isAiSettingsConfigured,
-  ])
+    return [...pinnedOrdered, ...rest]
+  }, [activeSegment, orderBySegment, pinnedIds, segmentOverrides, solutionsById])
 
   const editVisibleIds = useMemo(() => {
     const segmentOrder = draftOrder.filter((id) => resolveSegment(id) === activeSegment)
@@ -1712,36 +1674,15 @@ export function SolutionsSidepage({
 
         <SidepageContent className="solutions-sidepage__content">
           <div className="solutions-sidepage__toolbar">
-            <SearchInput
-              placeholder="Действие или решение"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onSearch={setQuery}
-              fullWidth
-              containerClassName="solutions-sidepage__search"
-            />
-            <div className="solutions-sidepage__toolbar-row">
-              <SegmentButton.Group
-                className="solutions-sidepage__segment"
-                value={segment}
-                onChange={setSegment}
-                aria-label="Фильтр решений"
-              >
-                <SegmentButton value="installed">Установленные</SegmentButton>
-                <SegmentButton value="recommended">Рекомендуемые</SegmentButton>
-              </SegmentButton.Group>
-              {activeSegment === 'installed' ? (
-                <Button
-                  size={ButtonSize.L}
-                  variant={ButtonVariants.FRAMELESS}
-                  isIconButton
-                  aria-label="Редактировать список"
-                  onClick={enterEditMode}
-                >
-                  <PipelineSettings20Icon />
-                </Button>
-              ) : null}
-            </div>
+            <SegmentButton.Group
+              className="solutions-sidepage__segment"
+              value={segment}
+              onChange={setSegment}
+              aria-label="Фильтр решений"
+            >
+              <SegmentButton value="installed">Установленные</SegmentButton>
+              <SegmentButton value="recommended">Рекомендуемые</SegmentButton>
+            </SegmentButton.Group>
           </div>
 
           <div className="solutions-sidepage__list">
@@ -1758,7 +1699,19 @@ export function SolutionsSidepage({
                   }
                   showDot={needsSetup(item.id, item.showDot)}
                   isPinned={listPinnedSet.has(id)}
-                  onClick={() => setDetailId(item.id)}
+                  onClick={
+                    NON_INTERACTIVE_IDS.has(item.id)
+                      ? undefined
+                      : () => {
+                          showSnackbar({
+                            message:
+                              resolveSegment(item.id) === 'recommended'
+                                ? 'Переход на страницу решения'
+                                : 'Открытие айфрейма решения',
+                            anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                          })
+                        }
+                  }
                 >
                   {item.body ? (
                     <SolutionBody
@@ -1785,11 +1738,7 @@ export function SolutionsSidepage({
             })}
             {listVisibleIds.length === 0 ? (
               <div className="solutions-sidepage__empty">
-                <Text colorToken={TextColor.secondary}>
-                  {query.trim()
-                    ? 'Ничего не найдено. Попробуйте другой запрос.'
-                    : 'В этом разделе пока нет решений.'}
-                </Text>
+                <Text colorToken={TextColor.secondary}>В этом разделе пока нет решений.</Text>
               </div>
             ) : null}
           </div>

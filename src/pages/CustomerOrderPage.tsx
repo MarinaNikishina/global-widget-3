@@ -46,6 +46,7 @@ import {
 import './CustomerOrderPage.css'
 import { asset } from '../assets'
 import { SolutionsSidepage } from '../components/SolutionsSidepage'
+import { SolutionsSidepageV2 } from '../components/SolutionsSidepageV2'
 
 const navItems: Array<{
   label: string
@@ -141,6 +142,7 @@ export function CustomerOrderPage() {
     'installed',
   )
   const [solutionsTipOpen, setSolutionsTipOpen] = useState(true)
+  const [solutionsV2Open, setSolutionsV2Open] = useState(false)
 
   const openSolutions = (segment: 'installed' | 'recommended' = 'installed') => {
     setSolutionsSegment(segment)
@@ -262,7 +264,12 @@ export function CustomerOrderPage() {
               </div>
             ) : null}
           </div>
-          <button type="button" className="top-chrome__icon-btn" aria-label="События">
+          <button
+            type="button"
+            className="top-chrome__icon-btn"
+            aria-label="События"
+            onClick={() => setSolutionsV2Open(true)}
+          >
             <Events20Icon />
           </button>
           <button type="button" className="top-chrome__icon-btn" aria-label="Уведомления">
@@ -603,6 +610,12 @@ export function CustomerOrderPage() {
         isOpen={solutionsOpen}
         onClose={() => setSolutionsOpen(false)}
         initialSegment={solutionsSegment}
+      />
+
+      <SolutionsSidepageV2
+        isOpen={solutionsV2Open}
+        onClose={() => setSolutionsV2Open(false)}
+        initialSegment="installed"
       />
     </div>
   )

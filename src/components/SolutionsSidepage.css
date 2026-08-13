@@ -110,16 +110,8 @@
 
 .solutions-sidepage__toolbar {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 0 0 12px;
-}
-
-.solutions-sidepage__toolbar-row {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  padding: 0 0 12px;
 }
 
 /* SegmentButton.Group: в ките высота 32px (padding 4 + item 24) */
@@ -139,11 +131,6 @@
   font-size: 14px;
   line-height: 20px;
   padding: 2px 12px;
-}
-
-.solutions-sidepage__search {
-  width: 100%;
-  max-width: 100%;
 }
 
 .solutions-sidepage__list {
@@ -258,13 +245,10 @@
   flex-shrink: 0;
 }
 
-/* Макет 195:6595 — дот у верха строки текста, pt 1px */
-.sol-card__dot {
+/* Бейдж «Требуется настройка» рядом с названием */
+.sol-card__badge {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: stretch;
-  padding-top: 1px;
+  align-items: center;
   flex-shrink: 0;
 }
 
