@@ -1531,21 +1531,6 @@ export function SolutionsSidepage({
     return [...pinnedOrdered, ...rest]
   }, [activeSegment, draftOrder, draftPinned, segmentOverrides, solutionsById])
 
-  const enterEditMode = () => {
-    const segmentPinned = pinnedIds.filter((id) => resolveSegment(id) === activeSegment)
-    const baseOrder = orderBySegment[activeSegment].filter(
-      (id) => resolveSegment(id) === activeSegment,
-    )
-    const pinSet = new Set(segmentPinned)
-    const rest = baseOrder.filter((id) => !pinSet.has(id))
-    setDraftPinned([...segmentPinned])
-    setDraftOrder([...segmentPinned, ...rest])
-    if (FAVORITES_ENABLED) {
-      setDraftFavorites(favorites.filter((id) => resolveSegment(id) === activeSegment))
-    }
-    setIsEditing(true)
-  }
-
   const cancelEdit = () => {
     setIsEditing(false)
     setDraftOrder([])
