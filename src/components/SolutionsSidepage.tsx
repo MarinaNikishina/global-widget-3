@@ -33,8 +33,6 @@ import {
   MyApps20Icon,
   Placement,
   Play12Icon,
-  Right16Icon,
-  SegmentButton,
   Select,
   Sidepage,
   SidepageContent,
@@ -394,7 +392,7 @@ function SolutionCard({
             <AttachPin20Icon />
           </span>
         ) : null}
-        {clickable ? <Right16Icon className="sol-card__chevron" /> : null}
+        {clickable ? <span className="sol-card__goto" aria-hidden /> : null}
       </header>
       {description ? (
         <div className="sol-card__body">
@@ -1658,18 +1656,6 @@ export function SolutionsSidepage({
         </SidepageHeader>
 
         <SidepageContent className="solutions-sidepage__content">
-          <div className="solutions-sidepage__toolbar">
-            <SegmentButton.Group
-              className="solutions-sidepage__segment"
-              value={segment}
-              onChange={setSegment}
-              aria-label="Фильтр решений"
-            >
-              <SegmentButton value="installed">Установленные</SegmentButton>
-              <SegmentButton value="recommended">Рекомендуемые</SegmentButton>
-            </SegmentButton.Group>
-          </div>
-
           <div className="solutions-sidepage__list">
             {listVisibleIds.map((id) => {
               const item = solutionsById.get(id)

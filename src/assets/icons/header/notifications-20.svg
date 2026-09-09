@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="notifications-20" clip-path="url(#clip0_0_51)">
+<path id="notifications" d="M7.85693 17.6218C7.98042 18.0961 8.25779 18.5161 8.64558 18.8158C9.03337 19.1156 9.50965 19.2782 9.99979 19.2782C10.4899 19.2782 10.9662 19.1156 11.354 18.8158C11.7418 18.5161 12.0192 18.0961 12.1426 17.6218M10 0.721808C11.6254 0.721808 13.1842 1.3675 14.3336 2.51683C15.4829 3.66616 16.1286 5.22498 16.1286 6.85038C16.1286 13.6647 18.6143 15.0075 19.2857 15.0075H0.714285C1.4 15.0075 3.87143 13.6504 3.87143 6.85038C3.87143 5.22498 4.51712 3.66616 5.66645 2.51683C6.81578 1.3675 8.3746 0.721808 10 0.721808Z" stroke="white" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_0_51">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>
