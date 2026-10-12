@@ -138,205 +138,53 @@
   height: 18px;
 }
 
+.top-chrome__nav-ico--tasks,
+.top-chrome__nav-ico--solutions {
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+}
+
 .top-chrome__right {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   flex: 1;
   min-width: 0;
   padding-left: 8px;
 }
 
-/* Блок чатов и решений занимает всё свободное место, контент по центру */
-.top-chrome__center {
-  position: relative;
+/* Три иконки по макету: 38×38, gap 4px */
+.top-chrome__actions {
   display: flex;
   align-items: center;
-  align-self: stretch;
-  justify-content: center;
-  flex: 1;
-  /* два свёрнутых блока по 48px и полоска между ними */
-  min-width: 97px;
-}
-
-/* Ширина блоков всегда равна и считается по самому широкому раскрытому
-   состоянию (3 × 48 = 144px), поэтому раскрытие не сдвигает соседей */
-.chrome-group {
-  position: relative;
-  display: flex;
-  align-items: center;
-  align-self: stretch;
-  flex: 0 0 144px;
-  min-width: 48px;
-  overflow: hidden;
-  transition: flex-basis 180ms ease;
-}
-
-.chrome-group--chats {
-  justify-content: flex-end;
-}
-
-.chrome-group--solutions {
-  justify-content: flex-start;
-}
-
-.chrome-group__edge {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: #c6dcea;
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.chrome-group--chats .chrome-group__edge {
-  left: 0;
-}
-
-.chrome-group--solutions .chrome-group__edge {
-  right: 0;
-}
-
-.chrome-group.is-open .chrome-group__edge {
-  opacity: 1;
-}
-
-.top-chrome__divider {
-  width: 1px;
-  height: 28px;
-  background: #c6dcea;
+  gap: 4px;
   flex-shrink: 0;
-  transition: height 180ms ease;
+  margin-left: auto;
 }
 
-.top-chrome__divider.is-tall {
-  height: 60px;
-}
-
-.chrome-btn,
-.top-chrome__icon-btn {
-  position: relative;
-  width: 48px;
-  height: 60px;
+.top-chrome__action-btn {
+  width: 38px;
+  height: 38px;
   border: 0;
   padding: 0;
   background: transparent;
-  color: #fff;
+  color: #f7f7f7;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  border-radius: 4px;
 }
 
-.chrome-btn:hover {
+.top-chrome__action-btn:hover {
   background: rgba(0, 0, 0, 0.12);
 }
 
-.chrome-btn--add {
-  width: 95px;
-  gap: 8px;
-  padding: 0 10px;
-  font-family: inherit;
-  font-size: 13px;
-  line-height: 18px;
-  letter-spacing: 0.1px;
-  color: #f7f7f7;
-  white-space: nowrap;
-  box-sizing: border-box;
-}
-
-/* Плюс такой же, как остальные иконки шапки, и не сжимается вместе с кнопкой */
-.chrome-btn--add svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-/* Скрытые кнопки не занимают места в потоке, поэтому раскрытие не сдвигает
-   соседей: в чатах они появляются слева от «Чатов», в решениях — справа */
-.chrome-btn--extra {
-  position: absolute;
-  top: 0;
-  visibility: hidden;
-  opacity: 0;
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease,
-    visibility 180ms;
-}
-
-/* Выезжают из-под основной кнопки: чаты влево, решения вправо */
-.chrome-group--chats .chrome-btn--extra {
-  transform: translateX(12px);
-}
-
-.chrome-group--solutions .chrome-btn--extra {
-  transform: translateX(-12px);
-}
-
-.chrome-btn--chats-1 {
-  right: 96px;
-}
-
-.chrome-btn--chats-2 {
-  right: 48px;
-}
-
-.chrome-btn--add {
-  left: 48px;
-}
-
-.chrome-group.is-open .chrome-btn--extra {
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.top-chrome__icon-btn--help {
-  width: 44px;
-}
-
-/* По макету подложка поддержки — круг 36px по центру кнопки, а не вся кнопка */
-.top-chrome__icon-btn--help::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 36px;
-  height: 36px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.12);
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.top-chrome__icon-btn--help:hover::before {
-  opacity: 1;
-}
-
-.top-chrome__icon-btn--help img {
-  position: relative;
-}
-
-.chrome-btn__badge,
-.top-chrome__badge {
-  position: absolute;
-  left: calc(50% - 2px);
-  top: calc(50% + 2px);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 14px;
-  border-radius: 8px;
-  background: #ee644a;
-  color: #fff;
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 700;
-  filter: drop-shadow(0 1px 1.3px rgba(0, 0, 0, 0.52));
+.top-chrome__action-btn img {
+  display: block;
 }
 
 /* Блок аккаунта — по остаточному принципу */
@@ -677,60 +525,6 @@
   font-size: 14px;
   line-height: 20px;
   text-decoration: none;
-}
-
-/* Подсказка у кнопки «Решения» */
-.solutions-tip {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: calc(50% - 44px);
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 20px rgba(9, 23, 57, 0.16), 0 0 2px rgba(9, 23, 57, 0.12);
-  white-space: nowrap;
-  color: var(--text-primary, #091739);
-}
-
-.solutions-tip::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  right: 14px;
-  width: 12px;
-  height: 12px;
-  background: #fff;
-  transform: rotate(45deg);
-  box-shadow: -1px -1px 1px rgba(9, 23, 57, 0.06);
-}
-
-.solutions-tip__text {
-  position: relative;
-  margin: 0;
-  color: var(--text-primary, #091739);
-}
-
-.solutions-tip__link {
-  text-decoration: underline;
-}
-
-.solutions-tip__close {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--elements-primary, #636f7f);
-  cursor: pointer;
-  flex-shrink: 0;
 }
 
 /* Тёмный хинт uikit наследует цвет и кегль страницы — задаём белый текст 14px */
