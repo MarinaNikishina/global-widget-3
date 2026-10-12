@@ -46,12 +46,8 @@ import navMoney from '../assets/icons/header/nav-money.svg'
 import navProcurement from '../assets/icons/header/nav-procurement.svg'
 import navRetail from '../assets/icons/header/nav-retail.svg'
 import navSelling from '../assets/icons/header/nav-selling.svg'
-import chromeNewspaper from '../assets/icons/header/newspaper-20.svg'
 import chromeTasks from '../assets/icons/header/task-20.svg'
 import chromeNotifications from '../assets/icons/header/notifications-20.svg'
-import futureSolutionSetup from '../assets/icons/header/future-solution-setup.png'
-import futureSolutionLogo from '../assets/icons/header/future-solution-logo.png'
-import futureSolutionAlert from '../assets/icons/header/future-solution-alert.png'
 
 const navItems: Array<{
   label: string
@@ -78,16 +74,6 @@ const LOGO_WIDTH = 58
 const NAV_WIDTH = LOGO_WIDTH + navItems.reduce((sum, item) => sum + item.width, 0)
 const CENTER_PADDING = 8
 const CENTER_EXPANDED_WIDTH = 144 + 1 + 144
-// Вариант 2: слоты остаются по 48px, раскрытие выходит за них — чатам нужно
-// 240px слева (5 кнопок), решениям 255px справа
-const CENTER_COLLAPSED_WIDTH = 48 + 1 + 48
-const FUTURE_CHATS_WIDTH = 5 * 48
-const FUTURE_CHATS_OPEN_WIDTH = 6 * 48
-const FUTURE_SOLUTIONS_OPEN_WIDTH = 48 + 255
-const CENTER_FUTURE_WIDTH = CENTER_COLLAPSED_WIDTH + 2 * FUTURE_CHATS_WIDTH
-// Вариант «2 без фикс»: раскрывается один блок за раз, место резервируем под больший
-const CENTER_FUTURE_FLOW_WIDTH =
-  Math.max(FUTURE_CHATS_OPEN_WIDTH, FUTURE_SOLUTIONS_OPEN_WIDTH) + 1 + 48
 const HELP_WIDTH = 44
 // Аватар со стрелкой и отступами — меньше блок аккаунта не становится
 const USER_COMPACT_WIDTH = 71
@@ -101,17 +87,6 @@ function userSpaceFor(headerWidth: number, centerWidth: number) {
 
 // Задержка хинтов в шапке, чтобы они не мелькали при проведении курсором, секунды
 const HINT_DELAY = 0.8
-
-type HeaderVariant = 0 | 1 | 2 | 3 | 4 | 5
-
-const headerVariants: Array<{ id: HeaderVariant; label: string }> = [
-  { id: 0, label: '0 база' },
-  { id: 1, label: '1 фикс' },
-  { id: 2, label: '2 много' },
-  { id: 5, label: '2 без фикс' },
-  { id: 3, label: '3 справа' },
-  { id: 4, label: '4 слева' },
-]
 
 const subnavItems = [
   'Заказы покупателей',
@@ -182,7 +157,6 @@ function EditableValue({
 }
 
 export function CustomerOrderPage() {
-  const [headerVariant, setHeaderVariant] = useState<HeaderVariant>(0)
   const [subnav, setSubnav] = useState(subnavItems[0])
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [solutionsSegment, setSolutionsSegment] = useState<'installed' | 'recommended'>(
@@ -192,9 +166,6 @@ export function CustomerOrderPage() {
   const [solutionsV2Open, setSolutionsV2Open] = useState(false)
   const [chatsOpen, setChatsOpen] = useState(false)
   const [catalogOpen, setCatalogOpen] = useState(false)
-  // Вариант 1: блоки всегда открыты, но полоски тянутся на всю высоту
-  // только при наведении на кнопки внутри соответствующего блока
-  const [hoveredGroup, setHoveredGroup] = useState<'chats' | 'solutions' | null>(null)
   const [compactUser, setCompactUser] = useState(false)
   const [userWidth, setUserWidth] = useState(USER_MAX_WIDTH)
   const [canExpand, setCanExpand] = useState(true)
@@ -204,59 +175,21 @@ export function CustomerOrderPage() {
     const node = headerRef.current
     if (!node) return
     const observer = new ResizeObserver(([entry]) => {
-      const centerWidth =
-        headerVariant === 2
-          ? CENTER_FUTURE_WIDTH
-          : headerVariant === 5
-            ? CENTER_FUTURE_FLOW_WIDTH
-            : CENTER_EXPANDED_WIDTH
-      const space = userSpaceFor(entry.contentRect.width, centerWidth)
-      // В «2 без фикс» место под аккаунт считаем по текущему раскрытию — блок может сдвигаться
-      const actualCenter =
-        headerVariant === 5
-          ? chatsOpen
-            ? FUTURE_CHATS_OPEN_WIDTH + 1 + 48
-            : catalogOpen
-              ? 48 + 1 + FUTURE_SOLUTIONS_OPEN_WIDTH
-              : CENTER_COLLAPSED_WIDTH
-          : centerWidth
-      const actualSpace = userSpaceFor(entry.contentRect.width, actualCenter)
-      const width = Math.min(
-        USER_MAX_WIDTH,
-        Math.max(USER_COMPACT_WIDTH, headerVariant === 5 ? actualSpace : space),
-      )
-      setUserWidth(width)
-      setCompactUser(
-        (headerVariant === 5 ? actualSpace : space) <
-          USER_COMPACT_WIDTH + USER_TEXT_MIN_WIDTH,
-      )
-      // Раскрытому центральному блоку места не хватает — не раскрываем его вовсе.
-      // В варианте 2 раскрытие выезжает из центра, поэтому считаем запас по краям
-      if (headerVariant === 2) {
-        const center =
-          entry.contentRect.width - NAV_WIDTH - CENTER_PADDING - HELP_WIDTH - width
-        setCanExpand((center - CENTER_COLLAPSED_WIDTH) / 2 >= FUTURE_CHATS_WIDTH)
-      } else {
-        setCanExpand(space >= USER_COMPACT_WIDTH)
-      }
+      const space = userSpaceFor(entry.contentRect.width, CENTER_EXPANDED_WIDTH)
+      setUserWidth(Math.min(USER_MAX_WIDTH, Math.max(USER_COMPACT_WIDTH, space)))
+      setCompactUser(space < USER_COMPACT_WIDTH + USER_TEXT_MIN_WIDTH)
+      // Раскрытому центральному блоку места не хватает — не раскрываем его вовсе
+      setCanExpand(space >= USER_COMPACT_WIDTH)
     })
     observer.observe(node)
     return () => observer.disconnect()
-  }, [headerVariant, chatsOpen, catalogOpen])
+  }, [])
 
   useEffect(() => {
     if (canExpand) return
     setChatsOpen(false)
     setCatalogOpen(false)
   }, [canExpand])
-
-  const showFutureChrome = headerVariant === 2 || headerVariant === 5
-  const chatsExpanded = headerVariant === 1 || chatsOpen
-  const solutionsExpanded = headerVariant === 1 || catalogOpen
-  const futureExpanded = showFutureChrome && catalogOpen
-  const futureChatsExpanded = showFutureChrome && chatsOpen
-  const chatsHovered = headerVariant === 1 && hoveredGroup === 'chats'
-  const solutionsHovered = headerVariant === 1 && hoveredGroup === 'solutions'
 
   const openSolutions = (segment: 'installed' | 'recommended' = 'installed') => {
     setSolutionsSegment(segment)
@@ -322,28 +255,7 @@ export function CustomerOrderPage() {
   )
 
   return (
-    <div className={`order-page order-page--header-variant-${headerVariant}`}>
-      <nav className="header-variant-menu" aria-label="Варианты шапки">
-        {headerVariants.map(({ id, label }) => (
-          <button
-            key={id}
-            type="button"
-            className={`header-variant-menu__button${
-              headerVariant === id ? ' is-active' : ''
-            }`}
-            aria-label={`Вариант ${label}`}
-            aria-pressed={headerVariant === id}
-            onClick={() => {
-              setHeaderVariant(id)
-              setChatsOpen(false)
-              setCatalogOpen(false)
-              setHoveredGroup(null)
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
+    <div className="order-page">
       <header className="top-chrome" ref={headerRef}>
         <div className="top-chrome__left">
           <div className="top-chrome__logo">
@@ -374,21 +286,8 @@ export function CustomerOrderPage() {
         <div className="top-chrome__right">
           <div className="top-chrome__center">
             <div
-              className={`chrome-group chrome-group--chats${
-                chatsExpanded ? ' is-open' : ''
-              }${futureChatsExpanded ? ' is-future-open' : ''}${
-                chatsHovered ? ' is-hovered' : ''
-              }`}
-              onMouseOver={() => {
-                if (headerVariant === 1) setHoveredGroup('chats')
-              }}
-              onFocusCapture={() => {
-                if (headerVariant === 1) setHoveredGroup('chats')
-              }}
-              onMouseLeave={() => {
-                setHoveredGroup(null)
-                setChatsOpen(false)
-              }}
+              className={`chrome-group chrome-group--chats${chatsOpen ? ' is-open' : ''}`}
+              onMouseLeave={() => setChatsOpen(false)}
             >
               <span className="chrome-group__edge" aria-hidden="true" />
               <Hint placement="bottom" overlay="Задачи" mouseEnterDelay={HINT_DELAY}>
@@ -396,8 +295,8 @@ export function CustomerOrderPage() {
                   type="button"
                   className="chrome-btn chrome-btn--extra chrome-btn--chats-1"
                   aria-label="Задачи"
-                  aria-hidden={showFutureChrome || !chatsExpanded}
-                  tabIndex={!showFutureChrome && chatsExpanded ? 0 : -1}
+                  aria-hidden={!chatsOpen}
+                  tabIndex={chatsOpen ? 0 : -1}
                 >
                   <img src={chromeTasks} alt="" width={20} height={20} />
                   <span className="chrome-btn__badge">3</span>
@@ -408,97 +307,19 @@ export function CustomerOrderPage() {
                   type="button"
                   className="chrome-btn chrome-btn--extra chrome-btn--chats-2"
                   aria-label="Уведомления"
-                  aria-hidden={showFutureChrome || !chatsExpanded}
-                  tabIndex={!showFutureChrome && chatsExpanded ? 0 : -1}
+                  aria-hidden={!chatsOpen}
+                  tabIndex={chatsOpen ? 0 : -1}
                 >
                   <img src={chromeNotifications} alt="" width={20} height={20} />
                 </button>
               </Hint>
-              {showFutureChrome ? (
-                <div className="future-chats" aria-hidden={!futureChatsExpanded}>
-                  <Hint
-                    placement="bottom"
-                    overlay="Решение: 2 новых события"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="chrome-btn"
-                      aria-label="Решение: 2 новых события"
-                      tabIndex={futureChatsExpanded ? 0 : -1}
-                    >
-                      <span className="chrome-btn__logo">
-                        <img src={futureSolutionSetup} alt="" />
-                        <img src={futureSolutionLogo} alt="" />
-                      </span>
-                      <span className="chrome-btn__badge">2</span>
-                    </button>
-                  </Hint>
-                  <Hint
-                    placement="bottom"
-                    overlay="Решение: 1 новое событие"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="chrome-btn"
-                      aria-label="Решение: 1 новое событие"
-                      tabIndex={futureChatsExpanded ? 0 : -1}
-                    >
-                      <span className="chrome-btn__logo">
-                        <img src={futureSolutionAlert} alt="" />
-                      </span>
-                      <span className="chrome-btn__badge">1</span>
-                    </button>
-                  </Hint>
-                  <Hint placement="bottom" overlay="Задачи" mouseEnterDelay={HINT_DELAY}>
-                    <button
-                      type="button"
-                      className="chrome-btn"
-                      aria-label="Задачи"
-                      tabIndex={futureChatsExpanded ? 0 : -1}
-                    >
-                      <img src={chromeTasks} alt="" width={20} height={20} />
-                      <span className="chrome-btn__badge">3</span>
-                    </button>
-                  </Hint>
-                  <Hint
-                    placement="bottom"
-                    overlay="Уведомления"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="chrome-btn"
-                      aria-label="Уведомления"
-                      tabIndex={futureChatsExpanded ? 0 : -1}
-                    >
-                      <img src={chromeNotifications} alt="" width={20} height={20} />
-                    </button>
-                  </Hint>
-                  <Hint placement="bottom" overlay="Новости" mouseEnterDelay={HINT_DELAY}>
-                    <button
-                      type="button"
-                      className="chrome-btn"
-                      aria-label="Новости"
-                      tabIndex={futureChatsExpanded ? 0 : -1}
-                    >
-                      <img src={chromeNewspaper} alt="" width={20} height={20} />
-                    </button>
-                  </Hint>
-                </div>
-              ) : null}
               <Hint placement="bottom" overlay="Чаты" mouseEnterDelay={HINT_DELAY}>
                 <button
                   type="button"
                   className="chrome-btn"
                   aria-label="Чаты"
-                  onMouseEnter={() => {
-                    if (headerVariant !== 1) setChatsOpen(canExpand)
-                  }}
-                  onFocus={() => {
-                    if (headerVariant !== 1) setChatsOpen(canExpand)
-                  }}
+                  onMouseEnter={() => setChatsOpen(canExpand)}
+                  onFocus={() => setChatsOpen(canExpand)}
                 >
                   <img src={chromeEvents} alt="" width={20} height={20} />
                   <span className="chrome-btn__badge">5</span>
@@ -507,102 +328,38 @@ export function CustomerOrderPage() {
             </div>
             <span
               className={`top-chrome__divider${
-                chatsHovered ||
-                solutionsHovered ||
-                (headerVariant !== 1 && (chatsOpen || catalogOpen))
-                  ? ' is-tall'
-                  : ''
+                chatsOpen || catalogOpen ? ' is-tall' : ''
               }`}
               aria-hidden="true"
             />
             <div
               className={`chrome-group chrome-group--solutions${
-                solutionsExpanded ? ' is-open' : ''
-              }${futureExpanded ? ' is-future-open' : ''}${
-                solutionsHovered ? ' is-hovered' : ''
+                catalogOpen ? ' is-open' : ''
               }`}
-              onMouseOver={() => {
-                if (headerVariant === 1) setHoveredGroup('solutions')
-              }}
-              onFocusCapture={() => {
-                if (headerVariant === 1) setHoveredGroup('solutions')
-              }}
-              onMouseLeave={() => {
-                setHoveredGroup(null)
-                setCatalogOpen(false)
-              }}
+              onMouseLeave={() => setCatalogOpen(false)}
             >
               <Hint placement="bottom" overlay="Решения" mouseEnterDelay={HINT_DELAY}>
                 <button
                   type="button"
                   className="chrome-btn"
                   aria-label="Решения"
-                  onMouseEnter={() => {
-                    if (headerVariant !== 1) setCatalogOpen(canExpand)
-                  }}
-                  onFocus={() => {
-                    if (headerVariant !== 1) setCatalogOpen(canExpand)
-                  }}
+                  onMouseEnter={() => setCatalogOpen(canExpand)}
+                  onFocus={() => setCatalogOpen(canExpand)}
                   onClick={() => openSolutions('installed')}
                 >
                   <img src={chromeApplications} alt="" width={20} height={20} />
-                  {showFutureChrome ? <span className="chrome-btn__dot" /> : null}
                 </button>
               </Hint>
-              {showFutureChrome ? (
-                <div className="future-solutions" aria-hidden={!futureExpanded}>
-                  <Hint
-                    placement="bottom"
-                    overlay="Требуется настройка"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="future-solutions__status"
-                      tabIndex={futureExpanded ? 0 : -1}
-                    >
-                      <span className="future-solutions__app">
-                        <img src={futureSolutionSetup} alt="" />
-                        <img src={futureSolutionLogo} alt="" />
-                      </span>
-                      <span>Требуется настройка</span>
-                    </button>
-                  </Hint>
-                  <Hint
-                    placement="bottom"
-                    overlay="Решение требует внимания"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="future-solutions__icon"
-                      tabIndex={futureExpanded ? 0 : -1}
-                    >
-                      <img src={futureSolutionAlert} alt="" />
-                      <span className="future-solutions__dot" />
-                    </button>
-                  </Hint>
-                  <Hint
-                    placement="bottom"
-                    overlay="Добавить новое решение из Каталога"
-                    mouseEnterDelay={HINT_DELAY}
-                  >
-                    <button
-                      type="button"
-                      className="future-solutions__icon future-solutions__add"
-                      tabIndex={futureExpanded ? 0 : -1}
-                    >
-                      <Add20Icon />
-                    </button>
-                  </Hint>
-                </div>
-              ) : null}
-              <Hint placement="bottom" overlay="Добавить новое решение из Каталога" mouseEnterDelay={HINT_DELAY}>
+              <Hint
+                placement="bottom"
+                overlay="Добавить новое решение из Каталога"
+                mouseEnterDelay={HINT_DELAY}
+              >
                 <button
                   type="button"
                   className="chrome-btn chrome-btn--extra chrome-btn--add"
-                  aria-hidden={showFutureChrome || !solutionsExpanded}
-                  tabIndex={!showFutureChrome && solutionsExpanded ? 0 : -1}
+                  aria-hidden={!catalogOpen}
+                  tabIndex={catalogOpen ? 0 : -1}
                 >
                   <Add20Icon />
                   <span>Решение</span>
