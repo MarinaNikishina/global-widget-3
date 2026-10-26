@@ -5,8 +5,12 @@ import {
   Button,
   ButtonSize,
   ButtonVariants,
+  Hint,
   Left12Icon,
+  Placement,
   Right12Icon,
+  Text,
+  TextColor,
   useSnackbar,
 } from '@moysklad/uikit'
 import { asset } from '../assets'
@@ -101,8 +105,136 @@ const PICKS: Pick[] = [
   },
 ]
 
+type InstalledApp = {
+  logo: string
+  title: string
+  badge?: string
+  clickable: boolean
+  actions: string[]
+}
+
+/** Короткие установленные решения из макета поповера 2.1. */
+const INSTALLED: InstalledApp[] = [
+  {
+    logo: asset('/mock/solutions/logo-mailings.png'),
+    title: 'Рассылки 365: WhatsApp Telegram MAX SMS Email',
+    badge: 'Требуется настройка',
+    clickable: true,
+    actions: [],
+  },
+  {
+    logo: asset('/mock/solutions/logo-search.png'),
+    title: 'Умный поиск',
+    clickable: true,
+    actions: ['Поиск заказа', 'Поиск контрагента', 'Поиск отгрузки', 'Поиск платежа'],
+  },
+]
+
+const MENU_LINKS = [
+  { label: 'Каталог', message: 'Переход в каталог решений' },
+  { label: 'Мои решения', message: 'Переход на страницу Мои решения в разделе' },
+  { label: 'Разработка', message: 'Переход на страницу разработчика в каталоге решений' },
+  { label: 'Блог', message: 'Переход в блог' },
+] as const
+
+const ACTION_MESSAGE =
+  'Выполнение действия по кнопке: модальное окно, снекбар выполнения и пр.'
+
+function isOverflowing(el: HTMLElement) {
+  const { textOverflow, overflow } = el.style
+  el.style.textOverflow = 'clip'
+  el.style.overflow = 'hidden'
+  const overflowing = el.scrollWidth > el.clientWidth
+  el.style.textOverflow = textOverflow
+  el.style.overflow = overflow
+  return overflowing
+}
+
+function OverflowHint({ text, className }: { text: string; className: string }) {
+  const textRef = useRef<HTMLSpanElement>(null)
+  const [hintOpen, setHintOpen] = useState(false)
+
+  return (
+    <Hint
+      placement={Placement.TOP}
+      mouseEnterDelay={0.3}
+      zIndex={300}
+      getTooltipContainer={() => document.body}
+      visible={hintOpen}
+      onVisibleChange={(visible) => {
+        if (!visible) {
+          setHintOpen(false)
+          return
+        }
+        const el = textRef.current
+        setHintOpen(Boolean(el && isOverflowing(el)))
+      }}
+      overlay={<Text.Body colorToken={TextColor.invert}>{text}</Text.Body>}
+    >
+      <span ref={textRef} className={className}>
+        {text}
+      </span>
+    </Hint>
+  )
+}
+
+function MoySkladPick({
+  pick,
+  onStep,
+  onOpen,
+}: {
+  pick: Pick
+  onStep: (delta: number) => void
+  onOpen: () => void
+}) {
+  return (
+    <div className="solutions-popover__pick">
+      <div className="solutions-popover__pick-head">
+        <p className="solutions-popover__pick-title">Выбор МоегоСклада</p>
+        <div className="solutions-popover__arrows">
+          <Button
+            size={ButtonSize.M}
+            variant={ButtonVariants.FILLED}
+            color="grey"
+            isIconButton
+            aria-label="Предыдущее решение"
+            onClick={() => onStep(-1)}
+          >
+            <Left12Icon />
+          </Button>
+          <Button
+            size={ButtonSize.M}
+            variant={ButtonVariants.FILLED}
+            color="grey"
+            isIconButton
+            aria-label="Следующее решение"
+            onClick={() => onStep(1)}
+          >
+            <Right12Icon />
+          </Button>
+        </div>
+      </div>
+
+      <div className="solutions-popover__card">
+        <img className="solutions-popover__logo" src={pick.logo} alt="" width={24} height={24} />
+        <div className="solutions-popover__card-body">
+          <div className="solutions-popover__card-head">
+            <button type="button" className="solutions-popover__title" onClick={onOpen}>
+              {pick.title}
+            </button>
+            {pick.badge ? (
+              <Badge className="solutions-popover__badge" variant="green" label={pick.badge} />
+            ) : null}
+          </div>
+          <p className="solutions-popover__desc">{pick.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 type SolutionsMenuPopoverProps = {
-  layout: 'empty' | 'empty-only' | 'categories'
+  layout: 'empty' | 'empty-only' | 'categories' | 'few'
   anchor: HTMLElement | null
   onMouseEnter: () => void
   onMouseLeave: () => void
@@ -140,7 +272,7 @@ export function SolutionsMenuPopover({
 
   useLayoutEffect(() => {
     const node = scrollRef.current
-    if (!node || layout !== 'categories') return
+    if (!node || (layout !== 'categories' && layout !== 'few')) return
     const update = () => {
       const { scrollHeight, clientHeight, scrollTop } = node
       if (scrollHeight <= clientHeight) {
@@ -182,7 +314,9 @@ export function SolutionsMenuPopover({
 
   return createPortal(
     <div
-      className={`solutions-popover${layout === 'categories' ? ' solutions-popover--categories' : ''}`}
+      className={`solutions-popover${
+        layout === 'categories' ? ' solutions-popover--categories' : ''
+      }${layout === 'few' ? ' solutions-popover--few' : ''}`}
       style={{ top: pos.top, left: pos.left }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -285,6 +419,115 @@ export function SolutionsMenuPopover({
           </div>
         </>
       ) : null}
+      {layout === 'few' ? (
+        <>
+          <div className="solutions-popover__links">
+            {MENU_LINKS.map((link) => (
+              <button
+                key={link.label}
+                type="button"
+                className="solutions-popover__link"
+                onClick={() =>
+                  showSnackbar({
+                    message: link.message,
+                    anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                  })
+                }
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+          <div className="solutions-popover__divider" />
+          <div className="solutions-popover__scroll-wrap">
+            <div className="solutions-popover__scroll" ref={scrollRef}>
+              <div className="solutions-popover__apps">
+                {INSTALLED.map((app) => (
+                  <article key={app.title} className="solutions-popover__app">
+                    {app.clickable ? (
+                      <button
+                        type="button"
+                        className="solutions-popover__app-head solutions-popover__app-head--clickable"
+                        onClick={() =>
+                          showSnackbar({
+                            message: 'Переход на страницу фрейма решения',
+                            anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                          })
+                        }
+                      >
+                        <img
+                          className="solutions-popover__app-logo"
+                          src={app.logo}
+                          alt=""
+                          width={24}
+                          height={24}
+                        />
+                        <OverflowHint text={app.title} className="solutions-popover__app-title" />
+                        {app.badge ? (
+                          <Badge
+                            className="solutions-popover__badge"
+                            variant="red"
+                            label={app.badge}
+                          />
+                        ) : null}
+                        <span className="solutions-popover__goto" aria-hidden />
+                      </button>
+                    ) : (
+                      <div className="solutions-popover__app-head">
+                        <img
+                          className="solutions-popover__app-logo"
+                          src={app.logo}
+                          alt=""
+                          width={24}
+                          height={24}
+                        />
+                        <OverflowHint text={app.title} className="solutions-popover__app-title" />
+                        {app.badge ? (
+                          <Badge
+                            className="solutions-popover__badge"
+                            variant="red"
+                            label={app.badge}
+                          />
+                        ) : null}
+                      </div>
+                    )}
+                    {app.actions.length > 0 ? (
+                      <div className="solutions-popover__app-actions">
+                        {app.actions.map((label) => (
+                          <button
+                            key={label}
+                            type="button"
+                            className="solutions-popover__app-action"
+                            onClick={() =>
+                              showSnackbar({
+                                message: ACTION_MESSAGE,
+                                anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                              })
+                            }
+                          >
+                            <OverflowHint
+                              text={label}
+                              className="solutions-popover__app-action-label"
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            </div>
+            {thumb.height > 0 ? (
+              <div
+                className="solutions-popover__thumb"
+                style={{ height: thumb.height, transform: `translateY(${thumb.top}px)` }}
+              />
+            ) : null}
+          </div>
+          <div className="solutions-popover__divider" />
+          <MoySkladPick pick={pick} onStep={step} onOpen={openSolution} />
+        </>
+      ) : null}
       {layout === 'empty' || layout === 'empty-only' ? (
         <>
       <div className="solutions-popover__empty">
@@ -322,58 +565,7 @@ export function SolutionsMenuPopover({
       {layout === 'empty' ? (
         <>
       <div className="solutions-popover__divider" />
-
-      <div className="solutions-popover__pick">
-      <div className="solutions-popover__pick-head">
-        <p className="solutions-popover__pick-title">Выбор МоегоСклада</p>
-        <div className="solutions-popover__arrows">
-          <Button
-            size={ButtonSize.M}
-            variant={ButtonVariants.FILLED}
-            color="grey"
-            isIconButton
-            aria-label="Предыдущее решение"
-            onClick={() => step(-1)}
-          >
-            <Left12Icon />
-          </Button>
-          <Button
-            size={ButtonSize.M}
-            variant={ButtonVariants.FILLED}
-            color="grey"
-            isIconButton
-            aria-label="Следующее решение"
-            onClick={() => step(1)}
-          >
-            <Right12Icon />
-          </Button>
-        </div>
-      </div>
-
-      <div className="solutions-popover__card">
-        <img className="solutions-popover__logo" src={pick.logo} alt="" width={24} height={24} />
-        <div className="solutions-popover__card-body">
-          <div className="solutions-popover__card-head">
-            <button
-              type="button"
-              className="solutions-popover__title"
-              onClick={() =>
-                showSnackbar({
-                  message: 'Переход на страницу решения',
-                  anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
-                })
-              }
-            >
-              {pick.title}
-            </button>
-            {pick.badge ? (
-              <Badge className="solutions-popover__badge" variant="green" label={pick.badge} />
-            ) : null}
-          </div>
-          <p className="solutions-popover__desc">{pick.description}</p>
-        </div>
-      </div>
-      </div>
+      <MoySkladPick pick={pick} onStep={step} onOpen={openSolution} />
         </>
       ) : null}
         </>

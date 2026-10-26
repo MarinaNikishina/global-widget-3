@@ -37,6 +37,7 @@ import {
   VARIANT_CATEGORIES,
   VARIANT_EMPTY,
   VARIANT_EMPTY_PICK,
+  VARIANT_FEW,
   useVariant,
 } from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
@@ -178,7 +179,8 @@ export function CustomerOrderPage() {
   const solutionsPopover =
     variant === VARIANT_EMPTY_PICK ||
     variant === VARIANT_CATEGORIES ||
-    variant === VARIANT_EMPTY
+    variant === VARIANT_EMPTY ||
+    variant === VARIANT_FEW
       ? variant
       : null
 
@@ -322,7 +324,9 @@ export function CustomerOrderPage() {
                             ? 'categories'
                             : solutionsPopover === VARIANT_EMPTY
                               ? 'empty-only'
-                              : 'empty'
+                              : solutionsPopover === VARIANT_FEW
+                                ? 'few'
+                                : 'empty'
                         }
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}

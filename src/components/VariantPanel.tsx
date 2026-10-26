@@ -1,5 +1,11 @@
 import './VariantPanel.css'
-import { VARIANT_CATEGORIES, VARIANT_EMPTY, VARIANT_EMPTY_PICK, useVariant } from './variantContext'
+import {
+  VARIANT_CATEGORIES,
+  VARIANT_EMPTY,
+  VARIANT_EMPTY_PICK,
+  VARIANT_FEW,
+  useVariant,
+} from './variantContext'
 
 const groups: Array<{ title: string; items: Array<{ id: string; label: string }> }> = [
   {
@@ -10,7 +16,10 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
       { id: VARIANT_EMPTY, label: '1.3 Empty State' },
     ],
   },
-  { title: 'Мало решений', items: [] },
+  {
+    title: 'Мало решений',
+    items: [{ id: VARIANT_FEW, label: '2.1 Empty state + Выбор МС' }],
+  },
   { title: 'Много решений', items: [] },
 ]
 
