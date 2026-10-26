@@ -130,7 +130,9 @@ const INSTALLED: InstalledApp[] = [
   },
 ]
 
-/** Те же решения, у второго ещё 8 действий — для варианта с прокруткой. */
+const INSTALLED_TWO: InstalledApp[] = INSTALLED.map((app, index) =>
+  index === 1 ? { ...app, actions: app.actions.slice(0, 2) } : app,
+)
 const INSTALLED_SCROLL: InstalledApp[] = INSTALLED.map((app, index) =>
   index === 1
     ? {
@@ -263,7 +265,7 @@ function MoySkladPick({
 }
 
 type SolutionsMenuPopoverProps = {
-  layout: 'empty' | 'empty-only' | 'categories' | 'few' | 'few-scroll'
+  layout: 'empty' | 'empty-only' | 'categories' | 'few' | 'few-scroll' | 'few-plain'
   anchor: HTMLElement | null
   onMouseEnter: () => void
   onMouseLeave: () => void
@@ -343,7 +345,8 @@ export function SolutionsMenuPopover({
     setIndex((current) => (current + delta + picks.length) % picks.length)
   }
 
-  const installedApps = layout === 'few-scroll' ? INSTALLED_SCROLL : INSTALLED
+  const installedApps =
+    layout === 'few-scroll' ? INSTALLED_SCROLL : layout === 'few-plain' ? INSTALLED_TWO : INSTALLED
 
   const renderInstalled = (apps: InstalledApp[]) => (
     <div className="solutions-popover__apps">
@@ -509,7 +512,7 @@ export function SolutionsMenuPopover({
           </div>
         </>
       ) : null}
-      {layout === 'few' || layout === 'few-scroll' ? (
+      {layout === 'few' || layout === 'few-scroll' || layout === 'few-plain' ? (
         <>
           <div className="solutions-popover__links">
             {MENU_LINKS.map((link) => (
@@ -544,8 +547,12 @@ export function SolutionsMenuPopover({
           ) : (
             renderInstalled(installedApps)
           )}
+          {layout === 'few-plain' ? null : (
+            <>
           <div className="solutions-popover__divider" />
           <MoySkladPick pick={pick} onStep={step} onOpen={openSolution} />
+            </>
+          )}
         </>
       ) : null}
       {layout === 'empty' || layout === 'empty-only' ? (

@@ -4,6 +4,7 @@ import {
   VARIANT_EMPTY,
   VARIANT_EMPTY_PICK,
   VARIANT_FEW,
+  VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
   useVariant,
 } from './variantContext'
@@ -22,6 +23,7 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
     items: [
       { id: VARIANT_FEW, label: '2.1 Список + Выбор МС' },
       { id: VARIANT_FEW_SCROLL, label: '2.1.1 Список + Выбор МС' },
+      { id: VARIANT_FEW_PLAIN, label: '2.2 Без выбор МС' },
     ],
   },
   { title: 'Много решений', items: [] },

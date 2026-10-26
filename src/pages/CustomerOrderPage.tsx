@@ -38,6 +38,7 @@ import {
   VARIANT_EMPTY,
   VARIANT_EMPTY_PICK,
   VARIANT_FEW,
+  VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
   useVariant,
 } from '../components/variantContext'
@@ -182,7 +183,8 @@ export function CustomerOrderPage() {
     variant === VARIANT_CATEGORIES ||
     variant === VARIANT_EMPTY ||
     variant === VARIANT_FEW ||
-    variant === VARIANT_FEW_SCROLL
+    variant === VARIANT_FEW_SCROLL ||
+    variant === VARIANT_FEW_PLAIN
       ? variant
       : null
 
@@ -330,7 +332,9 @@ export function CustomerOrderPage() {
                                 ? 'few'
                                 : solutionsPopover === VARIANT_FEW_SCROLL
                                   ? 'few-scroll'
-                                  : 'empty'
+                                  : solutionsPopover === VARIANT_FEW_PLAIN
+                                    ? 'few-plain'
+                                    : 'empty'
                         }
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}
