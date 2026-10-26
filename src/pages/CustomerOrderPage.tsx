@@ -33,7 +33,12 @@ import './CustomerOrderPage.css'
 import { asset } from '../assets'
 import { SolutionsMenuPopover } from '../components/SolutionsMenuPopover'
 import { SolutionsSidepage } from '../components/SolutionsSidepage'
-import { VARIANT_CATEGORIES, VARIANT_EMPTY_PICK, useVariant } from '../components/variantContext'
+import {
+  VARIANT_CATEGORIES,
+  VARIANT_EMPTY,
+  VARIANT_EMPTY_PICK,
+  useVariant,
+} from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
 import chromeEvents from '../assets/icons/header/events-20.svg'
 import chromeBell from '../assets/icons/header/bell-20.svg'
@@ -171,7 +176,11 @@ export function CustomerOrderPage() {
   const { variant } = useVariant()
   const { showSnackbar } = useSnackbar()
   const solutionsPopover =
-    variant === VARIANT_EMPTY_PICK || variant === VARIANT_CATEGORIES ? variant : null
+    variant === VARIANT_EMPTY_PICK ||
+    variant === VARIANT_CATEGORIES ||
+    variant === VARIANT_EMPTY
+      ? variant
+      : null
 
   const openSolutionsMenu = () => {
     if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
@@ -308,7 +317,13 @@ export function CustomerOrderPage() {
                     {button}
                     {solutionsMenuOpen ? (
                       <SolutionsMenuPopover
-                        layout={solutionsPopover === VARIANT_CATEGORIES ? 'categories' : 'empty'}
+                        layout={
+                          solutionsPopover === VARIANT_CATEGORIES
+                            ? 'categories'
+                            : solutionsPopover === VARIANT_EMPTY
+                              ? 'empty-only'
+                              : 'empty'
+                        }
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}
                         onMouseLeave={closeSolutionsMenu}

@@ -102,7 +102,7 @@ const PICKS: Pick[] = [
 ]
 
 type SolutionsMenuPopoverProps = {
-  layout: 'empty' | 'categories'
+  layout: 'empty' | 'empty-only' | 'categories'
   anchor: HTMLElement | null
   onMouseEnter: () => void
   onMouseLeave: () => void
@@ -285,7 +285,7 @@ export function SolutionsMenuPopover({
           </div>
         </>
       ) : null}
-      {layout === 'empty' ? (
+      {layout === 'empty' || layout === 'empty-only' ? (
         <>
       <div className="solutions-popover__empty">
         <div className="solutions-popover__mascot">
@@ -319,7 +319,8 @@ export function SolutionsMenuPopover({
           </div>
         </div>
       </div>
-
+      {layout === 'empty' ? (
+        <>
       <div className="solutions-popover__divider" />
 
       <div className="solutions-popover__pick">
@@ -373,6 +374,8 @@ export function SolutionsMenuPopover({
         </div>
       </div>
       </div>
+        </>
+      ) : null}
         </>
       ) : null}
     </div>,
