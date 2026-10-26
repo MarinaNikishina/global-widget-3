@@ -33,7 +33,7 @@ import './CustomerOrderPage.css'
 import { asset } from '../assets'
 import { SolutionsMenuPopover } from '../components/SolutionsMenuPopover'
 import { SolutionsSidepage } from '../components/SolutionsSidepage'
-import { VARIANT_EMPTY_PICK, useVariant } from '../components/variantContext'
+import { VARIANT_CATEGORIES, VARIANT_EMPTY_PICK, useVariant } from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
 import chromeEvents from '../assets/icons/header/events-20.svg'
 import chromeBell from '../assets/icons/header/bell-20.svg'
@@ -170,7 +170,8 @@ export function CustomerOrderPage() {
   const solutionsMenuTimer = useRef<number | null>(null)
   const { variant } = useVariant()
   const { showSnackbar } = useSnackbar()
-  const emptyPick = variant === VARIANT_EMPTY_PICK
+  const solutionsPopover =
+    variant === VARIANT_EMPTY_PICK || variant === VARIANT_CATEGORIES ? variant : null
 
   const openSolutionsMenu = () => {
     if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
@@ -279,7 +280,7 @@ export function CustomerOrderPage() {
                   onClick={
                     label === 'Моя компания'
                       ? () => openSolutions('installed')
-                      : label === 'Решения' && emptyPick
+                      : label === 'Решения' && solutionsPopover
                         ? () =>
                             showSnackbar({
                               message: 'Переход в каталог решений',
@@ -295,7 +296,7 @@ export function CustomerOrderPage() {
                 </button>
               )
 
-              if (label === 'Решения' && emptyPick) {
+              if (label === 'Решения' && solutionsPopover) {
                 return (
                   <div
                     key={label}
@@ -307,6 +308,7 @@ export function CustomerOrderPage() {
                     {button}
                     {solutionsMenuOpen ? (
                       <SolutionsMenuPopover
+                        layout={solutionsPopover === VARIANT_CATEGORIES ? 'categories' : 'empty'}
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}
                         onMouseLeave={closeSolutionsMenu}

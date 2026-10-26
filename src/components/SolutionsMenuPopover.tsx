@@ -16,6 +16,43 @@ import './SolutionsMenuPopover.css'
 const POPOVER_WIDTH = 480
 const VIEWPORT_GAP = 16
 
+/** Боковое меню каталога https://www.moysklad.ru/integratsii/populyarnoe/ */
+const CATEGORIES = [
+  'В мобильном приложении',
+  'Популярное',
+  'Чаты',
+  'Для Беларуси',
+  'Для Казахстана',
+  'Для Узбекистана',
+  'Новые',
+  'AI (ИИ) и чат-боты',
+  'Маркировка',
+  'Сотрудники',
+  'CMS, конструкторы сайтов и соцсети',
+  'CRM',
+  'Email, SMS, мессенджеры',
+  'Автоматизация',
+  'Аналитика',
+  'Банки',
+  'Бухгалтерия',
+  'Доставка',
+  'Другое',
+  'Заказы, счета и отгрузки',
+  'Контрагенты',
+  'Маркетплейсы',
+  'Мобильные приложения',
+  'Онлайн-кассы',
+  'Оплата по QR-коду в рознице',
+  'Платежные системы',
+  'Программы лояльности',
+  'Производство',
+  'Телефония',
+  'Товары и цены',
+  'Торговое оборудование',
+  'Финансы',
+  'ЭДО',
+]
+
 type Pick = {
   logo: string
   title: string
@@ -65,12 +102,14 @@ const PICKS: Pick[] = [
 ]
 
 type SolutionsMenuPopoverProps = {
+  layout: 'empty' | 'categories'
   anchor: HTMLElement | null
   onMouseEnter: () => void
   onMouseLeave: () => void
 }
 
 export function SolutionsMenuPopover({
+  layout,
   anchor,
   onMouseEnter,
   onMouseLeave,
@@ -97,6 +136,13 @@ export function SolutionsMenuPopover({
     }
   }, [anchor])
 
+  const openSolution = () => {
+    showSnackbar({
+      message: 'Переход на страницу решения',
+      anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+    })
+  }
+
   const goCatalog = () => {
     showSnackbar({
       message: 'Переход в каталог решений',
@@ -110,11 +156,88 @@ export function SolutionsMenuPopover({
 
   return createPortal(
     <div
-      className="solutions-popover"
+      className={`solutions-popover${layout === 'categories' ? ' solutions-popover--categories' : ''}`}
       style={{ top: pos.top, left: pos.left }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      {layout === 'categories' ? (
+        <>
+          <div className="solutions-popover__intro">
+            <p className="solutions-popover__intro-title">
+              Решения для расширения возможностей
+            </p>
+            <p className="solutions-popover__intro-desc">
+              Добавляйте интеграции, автоматизации и функции к МоемуСкладу
+            </p>
+          </div>
+          <div className="solutions-popover__divider" />
+          <div className="solutions-popover__scroll">
+            <div className="solutions-popover__pick-head">
+              <p className="solutions-popover__pick-title">Выбор МоегоСклада</p>
+              <div className="solutions-popover__arrows">
+                <Button
+                  size={ButtonSize.M}
+                  variant={ButtonVariants.FILLED}
+                  color="grey"
+                  isIconButton
+                  aria-label="Предыдущее решение"
+                  onClick={() => step(-1)}
+                >
+                  <Left12Icon />
+                </Button>
+                <Button
+                  size={ButtonSize.M}
+                  variant={ButtonVariants.FILLED}
+                  color="grey"
+                  isIconButton
+                  aria-label="Следующее решение"
+                  onClick={() => step(1)}
+                >
+                  <Right12Icon />
+                </Button>
+              </div>
+            </div>
+            <div className="solutions-popover__card solutions-popover__card--compact">
+              <img className="solutions-popover__logo" src={pick.logo} alt="" width={16} height={16} />
+              <div className="solutions-popover__card-body">
+                <div className="solutions-popover__card-head">
+                  <button type="button" className="solutions-popover__title" onClick={openSolution}>
+                    {pick.title}
+                  </button>
+                  {pick.badge ? <Badge variant="green" label={pick.badge} /> : null}
+                </div>
+                <p className="solutions-popover__desc">{pick.description}</p>
+              </div>
+            </div>
+            <p className="solutions-popover__categories-title">Другие категории</p>
+            <ul className="solutions-popover__categories">
+              {CATEGORIES.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="solutions-popover__footer">
+            <Button size={ButtonSize.L} variant={ButtonVariants.FRAMELESS} onClick={goCatalog}>
+              Каталог решений
+            </Button>
+            <Button
+              size={ButtonSize.L}
+              variant={ButtonVariants.FRAMELESS}
+              onClick={() =>
+                showSnackbar({
+                  message: 'Переход в блог',
+                  anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                })
+              }
+            >
+              Статьи и обзоры
+            </Button>
+          </div>
+        </>
+      ) : null}
+      {layout === 'empty' ? (
+        <>
       <div className="solutions-popover__empty">
         <div className="solutions-popover__mascot">
           <img src={emptyMascot} alt="" />
@@ -199,6 +322,8 @@ export function SolutionsMenuPopover({
         </div>
       </div>
       </div>
+        </>
+      ) : null}
     </div>,
     document.body,
   )
