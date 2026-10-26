@@ -1,0 +1,30 @@
+.variant-panel {
+  position: fixed;
+  z-index: 40;
+  top: 76px;
+  left: 16px;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(9, 23, 57, 0.16), 0 0 2px rgba(9, 23, 57, 0.08);
+}
+
+.variant-panel__group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 8px 4px;
+}
+
+.variant-panel__heading {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  color: #5f6d79;
+}

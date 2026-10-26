@@ -1,5 +1,6 @@
 import { Snackbar } from '@moysklad/uikit'
 import PasswordGate from './components/PasswordGate'
+import { VariantPanel } from './components/VariantPanel'
 import CustomerOrderPage from './pages/CustomerOrderPage'
 
 export default function App() {
@@ -7,6 +8,7 @@ export default function App() {
     <PasswordGate>
       <Snackbar>
         <CustomerOrderPage />
+        <VariantPanel />
       </Snackbar>
     </PasswordGate>
   )

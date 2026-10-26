@@ -228,7 +228,7 @@
 }
 
 .sol-card__title-ellipsis {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
