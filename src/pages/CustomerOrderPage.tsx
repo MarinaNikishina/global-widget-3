@@ -40,6 +40,8 @@ import {
   VARIANT_FEW,
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
+  VARIANT_MANY,
+  VARIANT_MANY_SCROLL,
   useVariant,
 } from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
@@ -184,7 +186,9 @@ export function CustomerOrderPage() {
     variant === VARIANT_EMPTY ||
     variant === VARIANT_FEW ||
     variant === VARIANT_FEW_SCROLL ||
-    variant === VARIANT_FEW_PLAIN
+    variant === VARIANT_FEW_PLAIN ||
+    variant === VARIANT_MANY ||
+    variant === VARIANT_MANY_SCROLL
       ? variant
       : null
 
@@ -334,11 +338,22 @@ export function CustomerOrderPage() {
                                   ? 'few-scroll'
                                   : solutionsPopover === VARIANT_FEW_PLAIN
                                     ? 'few-plain'
-                                    : 'empty'
+                                    : solutionsPopover === VARIANT_MANY
+                                      ? 'many'
+                                      : solutionsPopover === VARIANT_MANY_SCROLL
+                                        ? 'many-scroll'
+                                        : 'empty'
                         }
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}
                         onMouseLeave={closeSolutionsMenu}
+                        onOpenFullList={() => {
+                          if (solutionsMenuTimer.current) {
+                            window.clearTimeout(solutionsMenuTimer.current)
+                          }
+                          setSolutionsMenuOpen(false)
+                          openSolutions('installed')
+                        }}
                       />
                     ) : null}
                   </div>

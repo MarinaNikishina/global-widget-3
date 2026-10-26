@@ -6,6 +6,8 @@ export const VARIANT_EMPTY = '1.3'
 export const VARIANT_FEW = '2.1'
 export const VARIANT_FEW_SCROLL = '2.1.1'
 export const VARIANT_FEW_PLAIN = '2.2'
+export const VARIANT_MANY = '3.1.1'
+export const VARIANT_MANY_SCROLL = '3.1.2'
 
 type VariantContextValue = {
   variant: string | null

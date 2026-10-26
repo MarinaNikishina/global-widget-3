@@ -6,6 +6,8 @@ import {
   VARIANT_FEW,
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
+  VARIANT_MANY,
+  VARIANT_MANY_SCROLL,
   useVariant,
 } from './variantContext'
 
@@ -22,11 +24,17 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
     title: 'Мало решений',
     items: [
       { id: VARIANT_FEW, label: '2.1 Список + Выбор МС' },
-      { id: VARIANT_FEW_SCROLL, label: '2.1.1 Список + Выбор МС' },
+      { id: VARIANT_FEW_SCROLL, label: '2.1.1 С прокруткой' },
       { id: VARIANT_FEW_PLAIN, label: '2.2 Без выбор МС' },
     ],
   },
-  { title: 'Много решений', items: [] },
+  {
+    title: 'Много решений',
+    items: [
+      { id: VARIANT_MANY, label: '3.1.1 Без прокрутки' },
+      { id: VARIANT_MANY_SCROLL, label: '3.1.2 С прокруткой' },
+    ],
+  },
 ]
 
 export function VariantPanel() {

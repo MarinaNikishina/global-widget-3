@@ -265,10 +265,19 @@ function MoySkladPick({
 }
 
 type SolutionsMenuPopoverProps = {
-  layout: 'empty' | 'empty-only' | 'categories' | 'few' | 'few-scroll' | 'few-plain'
+  layout:
+    | 'empty'
+    | 'empty-only'
+    | 'categories'
+    | 'few'
+    | 'few-scroll'
+    | 'few-plain'
+    | 'many'
+    | 'many-scroll'
   anchor: HTMLElement | null
   onMouseEnter: () => void
   onMouseLeave: () => void
+  onOpenFullList?: () => void
 }
 
 export function SolutionsMenuPopover({
@@ -276,6 +285,7 @@ export function SolutionsMenuPopover({
   anchor,
   onMouseEnter,
   onMouseLeave,
+  onOpenFullList,
 }: SolutionsMenuPopoverProps) {
   const { showSnackbar } = useSnackbar()
   const [index, setIndex] = useState(0)
@@ -329,7 +339,7 @@ export function SolutionsMenuPopover({
 
   useLayoutEffect(() => {
     const node = scrollRef.current
-    if (!node || (layout !== 'categories' && layout !== 'few-scroll')) return
+    if (!node || (layout !== 'categories' && layout !== 'few-scroll' && layout !== 'many-scroll')) return
     const update = () => {
       const { scrollHeight, clientHeight, scrollTop } = node
       if (scrollHeight <= clientHeight) {
@@ -370,7 +380,14 @@ export function SolutionsMenuPopover({
   }
 
   const installedApps =
-    layout === 'few-scroll' ? INSTALLED_SCROLL : layout === 'few-plain' ? INSTALLED_TWO : INSTALLED
+    layout === 'few-scroll' || layout === 'many-scroll'
+      ? INSTALLED_SCROLL
+      : layout === 'few-plain'
+        ? INSTALLED_TWO
+        : INSTALLED
+  const scrolling = layout === 'few-scroll' || layout === 'many-scroll'
+  const showPick = layout === 'few' || layout === 'few-scroll'
+  const showFullList = layout === 'many' || layout === 'many-scroll'
 
   const renderInstalled = (apps: InstalledApp[]) => (
     <div className="solutions-popover__apps">
@@ -432,9 +449,11 @@ export function SolutionsMenuPopover({
       ref={popoverRef}
       className={`solutions-popover${
         layout === 'categories' ? ' solutions-popover--categories' : ''
-      }${layout === 'few' || layout === 'few-scroll' ? ' solutions-popover--few' : ''}${
-        layout === 'few-scroll' ? ' solutions-popover--few-scroll' : ''
-      }`}
+      }${
+        layout === 'few' || layout === 'few-scroll' || layout === 'many' || layout === 'many-scroll'
+          ? ' solutions-popover--few'
+          : ''
+      }${scrolling ? ' solutions-popover--few-scroll' : ''}`}
       style={{ top: pos.top, left: pos.left }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -537,7 +556,11 @@ export function SolutionsMenuPopover({
           </div>
         </>
       ) : null}
-      {layout === 'few' || layout === 'few-scroll' || layout === 'few-plain' ? (
+      {layout === 'few' ||
+      layout === 'few-scroll' ||
+      layout === 'few-plain' ||
+      layout === 'many' ||
+      layout === 'many-scroll' ? (
         <>
           <div className="solutions-popover__links">
             {MENU_LINKS.map((link) => (
@@ -557,7 +580,7 @@ export function SolutionsMenuPopover({
             ))}
           </div>
           <div className="solutions-popover__divider" />
-          {layout === 'few-scroll' ? (
+          {scrolling ? (
             <div className="solutions-popover__scroll-wrap">
               <div className="solutions-popover__scroll" ref={scrollRef}>
                 {renderInstalled(installedApps)}
@@ -572,12 +595,22 @@ export function SolutionsMenuPopover({
           ) : (
             renderInstalled(installedApps)
           )}
-          {layout === 'few-plain' ? null : (
+          {showPick ? (
             <>
-          <div className="solutions-popover__divider" />
-          <MoySkladPick pick={pick} onStep={step} onOpen={openSolution} />
+              <div className="solutions-popover__divider" />
+              <MoySkladPick pick={pick} onStep={step} onOpen={openSolution} />
             </>
-          )}
+          ) : null}
+          {showFullList ? (
+            <>
+              <div className="solutions-popover__divider" />
+              <div className="solutions-popover__full-list">
+                <Button size={ButtonSize.L} variant={ButtonVariants.FRAMELESS} onClick={onOpenFullList}>
+                  Полный список
+                </Button>
+              </div>
+            </>
+          ) : null}
         </>
       ) : null}
       {layout === 'empty' || layout === 'empty-only' ? (
