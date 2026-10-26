@@ -58,6 +58,7 @@ import navRetail from '../assets/icons/header/nav-retail.svg'
 import navSelling from '../assets/icons/header/nav-selling.svg'
 import navTasks from '../assets/icons/header/nav-tasks.svg'
 import navSolutions from '../assets/icons/header/nav-solutions.svg'
+import navSolutionsCaret from '../assets/icons/header/nav-solutions-caret.svg'
 
 const navItems: Array<{
   label: string
@@ -77,7 +78,7 @@ const navItems: Array<{
   { label: 'Онлайн-торговля', icon: navManufacture, iconName: 'manufacture', width: 106 },
   { label: 'Производство', icon: navManufacture, iconName: 'manufacture', width: 90 },
   { label: 'Задачи', icon: navTasks, iconName: 'tasks', width: 60 },
-  { label: 'Решения', icon: navSolutions, iconName: 'solutions', width: 68 },
+  { label: 'Решения', icon: navSolutions, iconName: 'solutions', width: 81 },
 ]
 
 // Блок аккаунта живёт на остатке после навигации и трёх иконок (3×38 + 2×4).
@@ -291,27 +292,64 @@ export function CustomerOrderPage() {
           </div>
           <nav className="top-chrome__nav" aria-label="Основное меню">
             {navItems.map(({ label, icon, iconName, width, active }) => {
+              const solutionsOpenSidepage =
+                label === 'Решения' &&
+                (solutionsPopover === VARIANT_FEW ||
+                  solutionsPopover === VARIANT_FEW_SCROLL ||
+                  solutionsPopover === VARIANT_FEW_PLAIN ||
+                  solutionsPopover === VARIANT_MANY ||
+                  solutionsPopover === VARIANT_MANY_SCROLL)
               const button = (
                 <button
                   type="button"
-                  className={`top-chrome__nav-item${active ? ' is-active' : ''}`}
+                  className={`top-chrome__nav-item${active ? ' is-active' : ''}${
+                    label === 'Решения' ? ' top-chrome__nav-item--solutions' : ''
+                  }`}
                   style={{ width }}
                   onClick={
                     label === 'Моя компания'
                       ? () => openSolutions('installed')
-                      : label === 'Решения' && solutionsPopover
-                        ? () =>
-                            showSnackbar({
-                              message: 'Переход в каталог решений',
-                              anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
-                            })
-                        : undefined
+                      : solutionsOpenSidepage
+                        ? () => {
+                            if (solutionsMenuTimer.current) {
+                              window.clearTimeout(solutionsMenuTimer.current)
+                            }
+                            setSolutionsMenuOpen(false)
+                            openSolutions('installed')
+                          }
+                        : label === 'Решения' && solutionsPopover
+                          ? () =>
+                              showSnackbar({
+                                message: 'Переход в каталог решений',
+                                anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                              })
+                          : undefined
                   }
                 >
-                  <span className="top-chrome__nav-icon">
-                    <img className={`top-chrome__nav-ico--${iconName}`} src={icon} alt="" />
-                  </span>
-                  <span>{label}</span>
+                  {label === 'Решения' ? (
+                    <>
+                      <span className="top-chrome__nav-solutions-main">
+                        <span className="top-chrome__nav-icon">
+                          <img className={`top-chrome__nav-ico--${iconName}`} src={icon} alt="" />
+                        </span>
+                        <span>{label}</span>
+                      </span>
+                      <img
+                        className="top-chrome__nav-caret"
+                        src={navSolutionsCaret}
+                        alt=""
+                        width={9}
+                        height={18}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <span className="top-chrome__nav-icon">
+                        <img className={`top-chrome__nav-ico--${iconName}`} src={icon} alt="" />
+                      </span>
+                      <span>{label}</span>
+                    </>
+                  )}
                 </button>
               )
 

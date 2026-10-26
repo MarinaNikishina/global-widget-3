@@ -74,6 +74,24 @@
   background: rgba(0, 0, 0, 0.12);
 }
 
+.top-chrome__nav-item--solutions {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.top-chrome__nav-solutions-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.top-chrome__nav-caret {
+  display: block;
+  flex-shrink: 0;
+}
+
 .top-chrome__nav-icon {
   position: relative;
   display: block;
