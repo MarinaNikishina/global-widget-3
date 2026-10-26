@@ -123,6 +123,16 @@
   min-width: 0;
 }
 
+.solutions-popover__badge {
+  flex-shrink: 0;
+  max-width: none;
+}
+
+.solutions-popover__badge [data-test-id='badge-label'] {
+  overflow: visible;
+  text-overflow: unset;
+}
+
 .solutions-popover__logo {
   width: 24px;
   height: 24px;
@@ -188,11 +198,36 @@
   color: var(--text-secondary, #5f6d79);
 }
 
+.solutions-popover__scroll-wrap {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .solutions-popover__scroll {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 4px 4px 0;
+  scrollbar-width: none;
+}
+
+.solutions-popover__scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.solutions-popover__thumb {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  width: 8px;
+  border-radius: 8px;
+  background: #d1d6df;
+  pointer-events: none;
 }
 
 .solutions-popover--categories .solutions-popover__card--compact {
@@ -237,10 +272,29 @@
 }
 
 .solutions-popover__categories li {
+  margin: 0;
+  padding: 0;
+}
+
+.solutions-popover__category {
+  display: block;
+  width: 100%;
+  margin: 0;
   padding: 6px 12px;
+  border: 0;
   border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   font-size: 14px;
   line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.solutions-popover__category:hover,
+.solutions-popover__category:focus-visible {
+  background: var(--elements-bg-hover, #f1f4f9);
 }
 
 .solutions-popover__footer {
