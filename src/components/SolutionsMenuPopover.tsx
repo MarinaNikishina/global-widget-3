@@ -129,11 +129,11 @@ export function SolutionsMenuPopover({
             </p>
           </div>
           <div className="solutions-popover__actions">
-            <Button size={ButtonSize.M} variant={ButtonVariants.PRIMARY} onClick={goCatalog}>
+            <Button size={ButtonSize.L} variant={ButtonVariants.PRIMARY} onClick={goCatalog}>
               Перейти в каталог
             </Button>
             <Button
-              size={ButtonSize.M}
+              size={ButtonSize.L}
               variant={ButtonVariants.FRAMELESS}
               onClick={() =>
                 showSnackbar({

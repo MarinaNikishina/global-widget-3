@@ -1,0 +1,10 @@
+---
+description: Map Figma button size M to MoySklad UI kit size L
+alwaysApply: true
+---
+
+# Кнопки и бейджи из макета
+
+Кнопка размера M в макете (primary, frameless, secondary и тот же ряд) — это `ButtonSize.L` из `@moysklad/uikit`. Не подгоняй отступы и скругление китовой кнопки M под пиксели макета.
+
+Ширину бейджа бери по содержимому. Фиксированную ширину ставь только если она указана отдельно.
