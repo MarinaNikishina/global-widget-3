@@ -1,13 +1,37 @@
 import './VariantPanel.css'
+import { VARIANT_EMPTY_PICK, useVariant } from './variantContext'
 
-const groups = ['Пустое состояние', 'Мало решений', 'Много решений']
+const groups: Array<{ title: string; items: Array<{ id: string; label: string }> }> = [
+  {
+    title: 'Пустое состояние',
+    items: [{ id: VARIANT_EMPTY_PICK, label: '1.1 Empty state + Выбор МС' }],
+  },
+  { title: 'Мало решений', items: [] },
+  { title: 'Много решений', items: [] },
+]
 
 export function VariantPanel() {
+  const { variant, setVariant } = useVariant()
+
   return (
     <aside className="variant-panel" aria-label="Варианты">
-      {groups.map((title) => (
-        <section key={title} className="variant-panel__group">
-          <h2 className="variant-panel__heading">{title}</h2>
+      {groups.map((group) => (
+        <section key={group.title} className="variant-panel__group">
+          <h2 className="variant-panel__heading">{group.title}</h2>
+          {group.items.map((item) => {
+            const selected = variant === item.id
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`variant-panel__item${selected ? ' is-selected' : ''}`}
+                aria-pressed={selected}
+                onClick={() => setVariant(selected ? null : item.id)}
+              >
+                {item.label}
+              </button>
+            )
+          })}
         </section>
       ))}
     </aside>

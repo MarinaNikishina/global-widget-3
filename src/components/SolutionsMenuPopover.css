@@ -1,0 +1,137 @@
+.solutions-popover {
+  position: fixed;
+  z-index: 60;
+  width: 440px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text-primary, #091739);
+  box-shadow:
+    0 4px 15px rgba(9, 23, 57, 0.12),
+    0 0 1px rgba(9, 23, 57, 0.08);
+}
+
+.solutions-popover__empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.solutions-popover__mascot {
+  width: 92px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.solutions-popover__empty-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.solutions-popover__empty-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+.solutions-popover__empty-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-secondary, #5f6d79);
+}
+
+.solutions-popover__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.solutions-popover__divider {
+  height: 1px;
+  margin: 0 -16px;
+  background: #d1d6df;
+}
+
+.solutions-popover__pick-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.solutions-popover__pick-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 700;
+}
+
+.solutions-popover__arrows {
+  display: flex;
+  gap: 4px;
+}
+
+.solutions-popover__card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f1f4f9;
+}
+
+.solutions-popover__card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.solutions-popover__logo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.solutions-popover__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.solutions-popover__title:hover {
+  color: var(--text-accent, #036ce5);
+}
+
+.solutions-popover__desc {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-secondary, #5f6d79);
+}

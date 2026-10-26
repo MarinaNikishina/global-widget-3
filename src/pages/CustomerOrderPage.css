@@ -41,6 +41,11 @@
   overflow: hidden;
 }
 
+.top-chrome__nav-anchor {
+  display: flex;
+  flex-shrink: 0;
+}
+
 .top-chrome__nav-item {
   display: flex;
   flex-direction: column;

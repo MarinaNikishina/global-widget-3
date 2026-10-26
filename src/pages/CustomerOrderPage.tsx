@@ -25,12 +25,15 @@ import {
   Text,
   TextColor,
   Turnover20Icon,
+  useSnackbar,
   ViewersStack,
   type ISelectOption,
 } from '@moysklad/uikit'
 import './CustomerOrderPage.css'
 import { asset } from '../assets'
+import { SolutionsMenuPopover } from '../components/SolutionsMenuPopover'
 import { SolutionsSidepage } from '../components/SolutionsSidepage'
+import { VARIANT_EMPTY_PICK, useVariant } from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
 import chromeEvents from '../assets/icons/header/events-20.svg'
 import chromeBell from '../assets/icons/header/bell-20.svg'
@@ -161,7 +164,28 @@ export function CustomerOrderPage() {
   )
   const [compactUser, setCompactUser] = useState(false)
   const [userWidth, setUserWidth] = useState(USER_MAX_WIDTH)
+  const [solutionsMenuOpen, setSolutionsMenuOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
+  const solutionsNavRef = useRef<HTMLDivElement>(null)
+  const solutionsMenuTimer = useRef<number | null>(null)
+  const { variant } = useVariant()
+  const { showSnackbar } = useSnackbar()
+  const emptyPick = variant === VARIANT_EMPTY_PICK
+
+  const openSolutionsMenu = () => {
+    if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
+    setSolutionsMenuOpen(true)
+  }
+  const closeSolutionsMenu = () => {
+    if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
+    solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(false), 160)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
+    }
+  }, [])
 
   useEffect(() => {
     const node = headerRef.current
@@ -246,13 +270,8 @@ export function CustomerOrderPage() {
             <img src={chromeLogo} alt="" width={25} height={19} />
           </div>
           <nav className="top-chrome__nav" aria-label="Основное меню">
-            {navItems.map(({ label, icon, iconName, width, active }) => (
-              <Hint
-                key={label}
-                placement="bottom"
-                overlay={label}
-                mouseEnterDelay={HINT_DELAY}
-              >
+            {navItems.map(({ label, icon, iconName, width, active }) => {
+              const button = (
                 <button
                   type="button"
                   className={`top-chrome__nav-item${active ? ' is-active' : ''}`}
@@ -260,7 +279,13 @@ export function CustomerOrderPage() {
                   onClick={
                     label === 'Моя компания'
                       ? () => openSolutions('installed')
-                      : undefined
+                      : label === 'Решения' && emptyPick
+                        ? () =>
+                            showSnackbar({
+                              message: 'Переход в каталог решений',
+                              anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                            })
+                        : undefined
                   }
                 >
                   <span className="top-chrome__nav-icon">
@@ -268,8 +293,35 @@ export function CustomerOrderPage() {
                   </span>
                   <span>{label}</span>
                 </button>
-              </Hint>
-            ))}
+              )
+
+              if (label === 'Решения' && emptyPick) {
+                return (
+                  <div
+                    key={label}
+                    ref={solutionsNavRef}
+                    className="top-chrome__nav-anchor"
+                    onMouseEnter={openSolutionsMenu}
+                    onMouseLeave={closeSolutionsMenu}
+                  >
+                    {button}
+                    {solutionsMenuOpen ? (
+                      <SolutionsMenuPopover
+                        anchor={solutionsNavRef.current}
+                        onMouseEnter={openSolutionsMenu}
+                        onMouseLeave={closeSolutionsMenu}
+                      />
+                    ) : null}
+                  </div>
+                )
+              }
+
+              return (
+                <Hint key={label} placement="bottom" overlay={label} mouseEnterDelay={HINT_DELAY}>
+                  {button}
+                </Hint>
+              )
+            })}
           </nav>
         </div>
         <div className="top-chrome__right">
