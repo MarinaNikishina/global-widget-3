@@ -152,6 +152,15 @@ const INSTALLED_SCROLL: InstalledApp[] = INSTALLED.map((app, index) =>
     : app,
 )
 
+const MANY_EXTRA: InstalledApp = {
+  logo: asset('/mock/solutions/logo-payments.png'),
+  title: 'Автоматическая привязка платежей',
+  clickable: true,
+  actions: ['Синхронизировать данные'],
+}
+const MANY_INSTALLED: InstalledApp[] = [MANY_EXTRA, ...INSTALLED]
+const MANY_INSTALLED_SCROLL: InstalledApp[] = [MANY_EXTRA, ...INSTALLED_SCROLL]
+
 /** Подборка 2.1 и 2.1.1: без решений из списка, «Конструктор документов» первый. */
 const FEW_PICKS: Pick[] = (() => {
   const installed = new Set(INSTALLED.map((app) => app.title))
@@ -380,11 +389,15 @@ export function SolutionsMenuPopover({
   }
 
   const installedApps =
-    layout === 'few-scroll' || layout === 'many-scroll'
-      ? INSTALLED_SCROLL
-      : layout === 'few-plain'
-        ? INSTALLED_TWO
-        : INSTALLED
+    layout === 'many-scroll'
+      ? MANY_INSTALLED_SCROLL
+      : layout === 'many'
+        ? MANY_INSTALLED
+        : layout === 'few-scroll'
+          ? INSTALLED_SCROLL
+          : layout === 'few-plain'
+            ? INSTALLED_TWO
+            : INSTALLED
   const scrolling = layout === 'few-scroll' || layout === 'many-scroll'
   const showPick = layout === 'few' || layout === 'few-scroll'
   const showFullList = layout === 'many' || layout === 'many-scroll'
