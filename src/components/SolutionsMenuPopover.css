@@ -69,8 +69,15 @@
 }
 
 .solutions-popover__divider {
+  flex: 0 0 1px;
   height: 1px;
+  min-height: 1px;
+  max-height: 1px;
   background: #d1d6df;
+}
+
+.solutions-popover--few:not(.solutions-popover--few-scroll) .solutions-popover__apps {
+  padding-bottom: 0;
 }
 
 .solutions-popover__pick {

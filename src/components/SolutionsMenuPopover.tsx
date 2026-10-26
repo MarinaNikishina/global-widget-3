@@ -150,6 +150,15 @@ const INSTALLED_SCROLL: InstalledApp[] = INSTALLED.map((app, index) =>
     : app,
 )
 
+/** Подборка 2.1 и 2.1.1: без решений из списка, «Конструктор документов» первый. */
+const FEW_PICKS: Pick[] = (() => {
+  const installed = new Set(INSTALLED.map((app) => app.title))
+  const rest = PICKS.filter((item) => !installed.has(item.title))
+  const docs = rest.filter((item) => item.title === 'Конструктор документов')
+  const others = rest.filter((item) => item.title !== 'Конструктор документов')
+  return [...docs, ...others]
+})()
+
 const MENU_LINKS = [
   { label: 'Каталог', message: 'Переход в каталог решений' },
   { label: 'Мои решения', message: 'Переход на страницу Мои решения в разделе' },
@@ -271,15 +280,17 @@ export function SolutionsMenuPopover({
   const [pos, setPos] = useState({ top: 0, left: 0 })
   const [thumb, setThumb] = useState({ height: 0, top: 0 })
   const scrollRef = useRef<HTMLDivElement>(null)
-  const pick = PICKS[index]
+  const picks = layout === 'few' || layout === 'few-scroll' ? FEW_PICKS : PICKS
+  const pick = picks[index % picks.length]
 
   useLayoutEffect(() => {
     if (!anchor) return
     const place = () => {
       const rect = anchor.getBoundingClientRect()
-      const maxLeft = window.innerWidth - POPOVER_WIDTH - VIEWPORT_GAP
-      const left = Math.max(VIEWPORT_GAP, Math.min(rect.left, maxLeft))
-      setPos({ top: rect.bottom + 4, left })
+      const viewport = document.documentElement.clientWidth
+      const maxLeft = viewport - POPOVER_WIDTH - VIEWPORT_GAP
+      const left = Math.round(Math.max(VIEWPORT_GAP, Math.min(rect.left, maxLeft)))
+      setPos({ top: Math.round(rect.bottom + 4), left })
     }
     place()
     window.addEventListener('resize', place)
@@ -329,7 +340,7 @@ export function SolutionsMenuPopover({
   }
 
   const step = (delta: number) => {
-    setIndex((current) => (current + delta + PICKS.length) % PICKS.length)
+    setIndex((current) => (current + delta + picks.length) % picks.length)
   }
 
   const installedApps = layout === 'few-scroll' ? INSTALLED_SCROLL : INSTALLED
