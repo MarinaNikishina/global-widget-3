@@ -1,12 +1,10 @@
 .solutions-popover {
   position: fixed;
   z-index: 60;
-  width: 440px;
+  width: 480px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
   border-radius: 12px;
   background: #fff;
   color: var(--text-primary, #091739);
@@ -17,21 +15,37 @@
 
 .solutions-popover__empty {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 29px;
 }
 
 .solutions-popover__mascot {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  padding: 19px 0 0 4px;
+  box-sizing: border-box;
+}
+
+.solutions-popover__mascot img {
+  display: block;
   width: 92px;
   height: auto;
-  flex-shrink: 0;
 }
 
 .solutions-popover__empty-copy {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
   min-width: 0;
+}
+
+.solutions-popover__empty-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .solutions-popover__empty-title {
@@ -50,26 +64,29 @@
 
 .solutions-popover__actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 16px;
 }
 
 .solutions-popover__divider {
   height: 1px;
-  margin: 0 -16px;
   background: #d1d6df;
+}
+
+.solutions-popover__pick {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px 16px 4px;
 }
 
 .solutions-popover__pick-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 }
 
 .solutions-popover__pick-title {
   margin: 0;
+  padding: 6px 12px;
   font-size: 16px;
   line-height: 18px;
   font-weight: 700;
@@ -77,22 +94,32 @@
 
 .solutions-popover__arrows {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .solutions-popover__card {
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
-  padding: 12px;
+  margin-top: 4px;
+  margin-left: 12px;
+  padding: 14px 12px;
   border-radius: 12px;
   background: #f1f4f9;
+}
+
+.solutions-popover__card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .solutions-popover__card-head {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -100,7 +127,6 @@
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  border-radius: 6px;
   object-fit: cover;
 }
 

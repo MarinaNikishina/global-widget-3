@@ -13,7 +13,7 @@ import { asset } from '../assets'
 import emptyMascot from '../assets/icons/empty-mascot.svg'
 import './SolutionsMenuPopover.css'
 
-const POPOVER_WIDTH = 440
+const POPOVER_WIDTH = 480
 const VIEWPORT_GAP = 16
 
 type Pick = {
@@ -116,14 +116,18 @@ export function SolutionsMenuPopover({
       onMouseLeave={onMouseLeave}
     >
       <div className="solutions-popover__empty">
-        <img className="solutions-popover__mascot" src={emptyMascot} alt="" />
+        <div className="solutions-popover__mascot">
+          <img src={emptyMascot} alt="" />
+        </div>
         <div className="solutions-popover__empty-copy">
-          <p className="solutions-popover__empty-title">
-            У вас нет активных решений для быстрого доступа
-          </p>
-          <p className="solutions-popover__empty-desc">
-            Добавляйте интеграции, автоматизации и функции к МоемуСкладу в каталоге решений
-          </p>
+          <div className="solutions-popover__empty-text">
+            <p className="solutions-popover__empty-title">
+              У вас нет активных решений для быстрого доступа
+            </p>
+            <p className="solutions-popover__empty-desc">
+              Добавляйте интеграции, автоматизации и функции к МоемуСкладу в каталоге решений
+            </p>
+          </div>
           <div className="solutions-popover__actions">
             <Button size={ButtonSize.M} variant={ButtonVariants.PRIMARY} onClick={goCatalog}>
               Перейти в каталог
@@ -146,12 +150,14 @@ export function SolutionsMenuPopover({
 
       <div className="solutions-popover__divider" />
 
+      <div className="solutions-popover__pick">
       <div className="solutions-popover__pick-head">
         <p className="solutions-popover__pick-title">Выбор МоегоСклада</p>
         <div className="solutions-popover__arrows">
           <Button
             size={ButtonSize.M}
-            variant={ButtonVariants.SECONDARY}
+            variant={ButtonVariants.FILLED}
+            color="grey"
             isIconButton
             aria-label="Предыдущее решение"
             onClick={() => step(-1)}
@@ -160,7 +166,8 @@ export function SolutionsMenuPopover({
           </Button>
           <Button
             size={ButtonSize.M}
-            variant={ButtonVariants.SECONDARY}
+            variant={ButtonVariants.FILLED}
+            color="grey"
             isIconButton
             aria-label="Следующее решение"
             onClick={() => step(1)}
@@ -171,23 +178,26 @@ export function SolutionsMenuPopover({
       </div>
 
       <div className="solutions-popover__card">
-        <div className="solutions-popover__card-head">
-          <img className="solutions-popover__logo" src={pick.logo} alt="" width={24} height={24} />
-          <button
-            type="button"
-            className="solutions-popover__title"
-            onClick={() =>
-              showSnackbar({
-                message: 'Переход на страницу решения',
-                anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
-              })
-            }
-          >
-            {pick.title}
-          </button>
-          {pick.badge ? <Badge variant="green" label={pick.badge} /> : null}
+        <img className="solutions-popover__logo" src={pick.logo} alt="" width={24} height={24} />
+        <div className="solutions-popover__card-body">
+          <div className="solutions-popover__card-head">
+            <button
+              type="button"
+              className="solutions-popover__title"
+              onClick={() =>
+                showSnackbar({
+                  message: 'Переход на страницу решения',
+                  anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+                })
+              }
+            >
+              {pick.title}
+            </button>
+            {pick.badge ? <Badge variant="green" label={pick.badge} /> : null}
+          </div>
+          <p className="solutions-popover__desc">{pick.description}</p>
         </div>
-        <p className="solutions-popover__desc">{pick.description}</p>
+      </div>
       </div>
     </div>,
     document.body,
