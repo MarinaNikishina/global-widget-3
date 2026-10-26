@@ -38,6 +38,7 @@ import {
   VARIANT_EMPTY,
   VARIANT_EMPTY_PICK,
   VARIANT_FEW,
+  VARIANT_FEW_SCROLL,
   useVariant,
 } from '../components/variantContext'
 import chromeLogo from '../assets/icons/header/logo-main.svg'
@@ -180,7 +181,8 @@ export function CustomerOrderPage() {
     variant === VARIANT_EMPTY_PICK ||
     variant === VARIANT_CATEGORIES ||
     variant === VARIANT_EMPTY ||
-    variant === VARIANT_FEW
+    variant === VARIANT_FEW ||
+    variant === VARIANT_FEW_SCROLL
       ? variant
       : null
 
@@ -326,7 +328,9 @@ export function CustomerOrderPage() {
                               ? 'empty-only'
                               : solutionsPopover === VARIANT_FEW
                                 ? 'few'
-                                : 'empty'
+                                : solutionsPopover === VARIANT_FEW_SCROLL
+                                  ? 'few-scroll'
+                                  : 'empty'
                         }
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}

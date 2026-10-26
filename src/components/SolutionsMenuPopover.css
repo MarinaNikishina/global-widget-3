@@ -299,11 +299,21 @@
   background: var(--elements-bg-hover, #f1f4f9);
 }
 
-.solutions-popover--few .solutions-popover__scroll {
+.solutions-popover--few-scroll {
+  max-height: 600px;
+}
+
+.solutions-popover--few-scroll .solutions-popover__links,
+.solutions-popover--few-scroll .solutions-popover__divider,
+.solutions-popover--few-scroll .solutions-popover__pick {
+  flex-shrink: 0;
+}
+
+.solutions-popover--few-scroll .solutions-popover__scroll {
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  max-height: 235px;
+  min-height: 0;
   padding: 0;
 }
 
