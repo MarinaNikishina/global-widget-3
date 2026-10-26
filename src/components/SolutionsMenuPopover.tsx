@@ -282,6 +282,7 @@ export function SolutionsMenuPopover({
   const [pos, setPos] = useState({ top: 0, left: 0 })
   const [thumb, setThumb] = useState({ height: 0, top: 0 })
   const scrollRef = useRef<HTMLDivElement>(null)
+  const popoverRef = useRef<HTMLDivElement>(null)
   const picks = layout === 'few' || layout === 'few-scroll' ? FEW_PICKS : PICKS
   const pick = picks[index % picks.length]
 
@@ -302,6 +303,29 @@ export function SolutionsMenuPopover({
       window.removeEventListener('scroll', place, true)
     }
   }, [anchor])
+
+  useLayoutEffect(() => {
+    const root = popoverRef.current
+    if (!root) return
+    const snap = () => {
+      const dpr = window.devicePixelRatio || 1
+      const lines = [...root.querySelectorAll<HTMLElement>('.solutions-popover__divider')]
+      for (const line of lines) {
+        line.style.height = ''
+        line.style.transform = ''
+      }
+      for (const line of lines) {
+        const y = line.getBoundingClientRect().top
+        const snapped = Math.round(y * dpr) / dpr
+        line.style.height = `${1 / dpr}px`
+        const delta = snapped - y
+        line.style.transform = Math.abs(delta) > 0.01 ? `translateY(${delta}px)` : ''
+      }
+    }
+    snap()
+    window.addEventListener('resize', snap)
+    return () => window.removeEventListener('resize', snap)
+  }, [layout, pos, index, thumb])
 
   useLayoutEffect(() => {
     const node = scrollRef.current
@@ -405,6 +429,7 @@ export function SolutionsMenuPopover({
 
   return createPortal(
     <div
+      ref={popoverRef}
       className={`solutions-popover${
         layout === 'categories' ? ' solutions-popover--categories' : ''
       }${layout === 'few' || layout === 'few-scroll' ? ' solutions-popover--few' : ''}${
