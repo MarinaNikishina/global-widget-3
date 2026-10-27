@@ -7,6 +7,7 @@ import {
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
   VARIANT_MANY,
+  VARIANT_MANY_DELAY,
   VARIANT_MANY_SCROLL,
   useVariant,
 } from './variantContext'
@@ -33,6 +34,7 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
     items: [
       { id: VARIANT_MANY, label: '3.1.1 Без прокрутки' },
       { id: VARIANT_MANY_SCROLL, label: '3.1.2 С прокруткой' },
+      { id: VARIANT_MANY_DELAY, label: '3.1.3 С задержкой' },
     ],
   },
 ]

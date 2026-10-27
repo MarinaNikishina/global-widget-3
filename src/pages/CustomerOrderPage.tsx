@@ -41,6 +41,7 @@ import {
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
   VARIANT_MANY,
+  VARIANT_MANY_DELAY,
   VARIANT_MANY_SCROLL,
   useVariant,
 } from '../components/variantContext'
@@ -189,12 +190,17 @@ export function CustomerOrderPage() {
     variant === VARIANT_FEW_SCROLL ||
     variant === VARIANT_FEW_PLAIN ||
     variant === VARIANT_MANY ||
-    variant === VARIANT_MANY_SCROLL
+    variant === VARIANT_MANY_SCROLL ||
+    variant === VARIANT_MANY_DELAY
       ? variant
       : null
 
   const openSolutionsMenu = () => {
     if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
+    if (solutionsPopover === VARIANT_MANY_DELAY && !solutionsMenuOpen) {
+      solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(true), 160)
+      return
+    }
     setSolutionsMenuOpen(true)
   }
   const closeSolutionsMenu = () => {
@@ -298,7 +304,8 @@ export function CustomerOrderPage() {
                   solutionsPopover === VARIANT_FEW_SCROLL ||
                   solutionsPopover === VARIANT_FEW_PLAIN ||
                   solutionsPopover === VARIANT_MANY ||
-                  solutionsPopover === VARIANT_MANY_SCROLL)
+                  solutionsPopover === VARIANT_MANY_SCROLL ||
+                  solutionsPopover === VARIANT_MANY_DELAY)
               const button = (
                 <button
                   type="button"
@@ -376,7 +383,8 @@ export function CustomerOrderPage() {
                                   ? 'few-scroll'
                                   : solutionsPopover === VARIANT_FEW_PLAIN
                                     ? 'few-plain'
-                                    : solutionsPopover === VARIANT_MANY
+                                    : solutionsPopover === VARIANT_MANY ||
+                                        solutionsPopover === VARIANT_MANY_DELAY
                                       ? 'many'
                                       : solutionsPopover === VARIANT_MANY_SCROLL
                                         ? 'many-scroll'
