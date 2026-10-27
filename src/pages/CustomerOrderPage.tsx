@@ -200,7 +200,7 @@ export function CustomerOrderPage() {
   const openSolutionsMenu = () => {
     if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
     if (solutionsPopover === VARIANT_MANY_DELAY && !solutionsMenuOpen) {
-      solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(true), 250)
+      solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(true), 350)
       return
     }
     setSolutionsMenuOpen(true)
