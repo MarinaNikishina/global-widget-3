@@ -619,7 +619,7 @@ export function SolutionsMenuPopover({
               <div className="solutions-popover__divider" />
               <div className="solutions-popover__full-list">
                 <Button size={ButtonSize.L} variant={ButtonVariants.FRAMELESS} onClick={onOpenFullList}>
-                  Полный список
+                  Еще 2 решения
                 </Button>
               </div>
             </>
