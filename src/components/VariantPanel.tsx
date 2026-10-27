@@ -18,7 +18,7 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
     title: 'Пустое состояние',
     items: [
       { id: VARIANT_EMPTY_PICK, label: '1.1 Empty state + Выбор МС' },
-      { id: VARIANT_CATEGORIES, label: '1.2 Категории + Выбор МС' },
+      { id: VARIANT_CATEGORIES, label: '1.2 Категории + Выбор МС + СП' },
       { id: VARIANT_EMPTY, label: '1.3 Empty State' },
     ],
   },

@@ -1,0 +1,16 @@
+.solutions-sidepage--empty .solutions-sidepage__content {
+  padding-top: 24px;
+}
+
+.solutions-empty-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.solutions-empty-card__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}

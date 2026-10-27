@@ -32,6 +32,7 @@ import {
 import './CustomerOrderPage.css'
 import { asset } from '../assets'
 import { SolutionsMenuPopover } from '../components/SolutionsMenuPopover'
+import { SolutionsEmptySidepage } from '../components/SolutionsEmptySidepage'
 import { SolutionsSidepage } from '../components/SolutionsSidepage'
 import {
   VARIANT_CATEGORIES,
@@ -172,6 +173,7 @@ function EditableValue({
 export function CustomerOrderPage() {
   const [subnav, setSubnav] = useState(subnavItems[0])
   const [solutionsOpen, setSolutionsOpen] = useState(false)
+  const [solutionsEmptyOpen, setSolutionsEmptyOpen] = useState(false)
   const [solutionsSegment, setSolutionsSegment] = useState<'installed' | 'recommended'>(
     'installed',
   )
@@ -309,6 +311,14 @@ export function CustomerOrderPage() {
                   solutionsPopover === VARIANT_MANY ||
                   solutionsPopover === VARIANT_MANY_SCROLL ||
                   solutionsPopover === VARIANT_MANY_DELAY)
+              const solutionsOpenEmptySidepage =
+                label === 'Решения' && solutionsPopover === VARIANT_CATEGORIES
+              const closeSolutionsMenuNow = () => {
+                if (solutionsMenuTimer.current) {
+                  window.clearTimeout(solutionsMenuTimer.current)
+                }
+                setSolutionsMenuOpen(false)
+              }
               const button = (
                 <button
                   type="button"
@@ -321,13 +331,15 @@ export function CustomerOrderPage() {
                       ? () => openSolutions('installed')
                       : solutionsOpenSidepage
                         ? () => {
-                            if (solutionsMenuTimer.current) {
-                              window.clearTimeout(solutionsMenuTimer.current)
-                            }
-                            setSolutionsMenuOpen(false)
+                            closeSolutionsMenuNow()
                             openSolutions('installed')
                           }
-                        : label === 'Решения' && solutionsPopover
+                        : solutionsOpenEmptySidepage
+                          ? () => {
+                              closeSolutionsMenuNow()
+                              setSolutionsEmptyOpen(true)
+                            }
+                          : label === 'Решения' && solutionsPopover
                           ? () =>
                               showSnackbar({
                                 message: 'Переход в каталог решений',
@@ -778,6 +790,10 @@ export function CustomerOrderPage() {
         isOpen={solutionsOpen}
         onClose={() => setSolutionsOpen(false)}
         initialSegment={solutionsSegment}
+      />
+      <SolutionsEmptySidepage
+        isOpen={solutionsEmptyOpen}
+        onClose={() => setSolutionsEmptyOpen(false)}
       />
     </div>
   )
