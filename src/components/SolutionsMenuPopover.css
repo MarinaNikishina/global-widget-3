@@ -13,6 +13,27 @@
     0 0 1px rgba(9, 23, 57, 0.08);
 }
 
+.solutions-popover--appear {
+  animation: solutions-popover-in 200ms ease-out;
+}
+
+@keyframes solutions-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solutions-popover--appear {
+    animation: none;
+  }
+}
+
 .solutions-popover__empty {
   display: flex;
   align-items: center;

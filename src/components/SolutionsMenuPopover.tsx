@@ -287,6 +287,7 @@ type SolutionsMenuPopoverProps = {
   onMouseEnter: () => void
   onMouseLeave: () => void
   onOpenFullList?: () => void
+  appear?: boolean
 }
 
 export function SolutionsMenuPopover({
@@ -295,6 +296,7 @@ export function SolutionsMenuPopover({
   onMouseEnter,
   onMouseLeave,
   onOpenFullList,
+  appear = false,
 }: SolutionsMenuPopoverProps) {
   const { showSnackbar } = useSnackbar()
   const [index, setIndex] = useState(0)
@@ -466,7 +468,9 @@ export function SolutionsMenuPopover({
         layout === 'few' || layout === 'few-scroll' || layout === 'many' || layout === 'many-scroll'
           ? ' solutions-popover--few'
           : ''
-      }${scrolling ? ' solutions-popover--few-scroll' : ''}`}
+      }${scrolling ? ' solutions-popover--few-scroll' : ''}${
+        appear ? ' solutions-popover--appear' : ''
+      }`}
       style={{ top: pos.top, left: pos.left }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

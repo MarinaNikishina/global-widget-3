@@ -198,7 +198,7 @@ export function CustomerOrderPage() {
   const openSolutionsMenu = () => {
     if (solutionsMenuTimer.current) window.clearTimeout(solutionsMenuTimer.current)
     if (solutionsPopover === VARIANT_MANY_DELAY && !solutionsMenuOpen) {
-      solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(true), 300)
+      solutionsMenuTimer.current = window.setTimeout(() => setSolutionsMenuOpen(true), 250)
       return
     }
     setSolutionsMenuOpen(true)
@@ -393,6 +393,7 @@ export function CustomerOrderPage() {
                         anchor={solutionsNavRef.current}
                         onMouseEnter={openSolutionsMenu}
                         onMouseLeave={closeSolutionsMenu}
+                        appear={solutionsPopover === VARIANT_MANY_DELAY}
                         onOpenFullList={() => {
                           if (solutionsMenuTimer.current) {
                             window.clearTimeout(solutionsMenuTimer.current)
