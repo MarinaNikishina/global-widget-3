@@ -40,6 +40,7 @@ import {
   VARIANT_FEW,
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
+  VARIANT_FEW_OUTLINE,
   VARIANT_MANY,
   VARIANT_MANY_DELAY,
   VARIANT_MANY_SCROLL,
@@ -189,6 +190,7 @@ export function CustomerOrderPage() {
     variant === VARIANT_FEW ||
     variant === VARIANT_FEW_SCROLL ||
     variant === VARIANT_FEW_PLAIN ||
+    variant === VARIANT_FEW_OUTLINE ||
     variant === VARIANT_MANY ||
     variant === VARIANT_MANY_SCROLL ||
     variant === VARIANT_MANY_DELAY
@@ -303,6 +305,7 @@ export function CustomerOrderPage() {
                 (solutionsPopover === VARIANT_FEW ||
                   solutionsPopover === VARIANT_FEW_SCROLL ||
                   solutionsPopover === VARIANT_FEW_PLAIN ||
+                  solutionsPopover === VARIANT_FEW_OUTLINE ||
                   solutionsPopover === VARIANT_MANY ||
                   solutionsPopover === VARIANT_MANY_SCROLL ||
                   solutionsPopover === VARIANT_MANY_DELAY)
@@ -381,7 +384,9 @@ export function CustomerOrderPage() {
                                 ? 'few'
                                 : solutionsPopover === VARIANT_FEW_SCROLL
                                   ? 'few-scroll'
-                                  : solutionsPopover === VARIANT_FEW_PLAIN
+                                  : solutionsPopover === VARIANT_FEW_OUTLINE
+                                    ? 'few-outline'
+                                    : solutionsPopover === VARIANT_FEW_PLAIN
                                     ? 'few-plain'
                                     : solutionsPopover === VARIANT_MANY ||
                                         solutionsPopover === VARIANT_MANY_DELAY

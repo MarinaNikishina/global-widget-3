@@ -496,6 +496,59 @@
   text-overflow: ellipsis;
 }
 
+.solutions-popover--outline .solutions-popover__app {
+  background: #fff;
+  border: 1px solid #d1d6df;
+}
+
+.solutions-popover--outline .solutions-popover__app-action {
+  border: 1px solid transparent;
+  background: #fff;
+}
+
+.solutions-popover--outline .solutions-popover__app-action:hover {
+  background: #f1f4f9;
+}
+
+.solutions-popover--outline .solutions-popover__app-action:active {
+  background: #d1d6df;
+}
+
+.solutions-popover--outline .solutions-popover__app-action:focus-visible {
+  background: #f1f4f9;
+  border-color: #091739;
+  outline: none;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:hover .solutions-popover__app-title {
+  color: #0b7cff;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:hover .solutions-popover__goto {
+  background-color: #0b7cff;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:focus-visible .solutions-popover__app-title {
+  color: #2f8fff;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:focus-visible .solutions-popover__goto {
+  background-color: #2f8fff;
+}
+
+.solutions-popover--outline .solutions-popover__app-head:focus-visible {
+  outline: 1px solid #091739;
+  outline-offset: 0;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:active .solutions-popover__app-title {
+  color: #005dc9;
+}
+
+.solutions-popover--outline .solutions-popover__app-head--clickable:active .solutions-popover__goto {
+  background-color: #005dc9;
+}
+
 .solutions-popover__footer {
   display: flex;
   flex-shrink: 0;

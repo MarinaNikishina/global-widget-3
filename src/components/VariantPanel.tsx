@@ -6,6 +6,7 @@ import {
   VARIANT_FEW,
   VARIANT_FEW_PLAIN,
   VARIANT_FEW_SCROLL,
+  VARIANT_FEW_OUTLINE,
   VARIANT_MANY,
   VARIANT_MANY_DELAY,
   VARIANT_MANY_SCROLL,
@@ -27,6 +28,7 @@ const groups: Array<{ title: string; items: Array<{ id: string; label: string }>
       { id: VARIANT_FEW, label: '2.1 Список + Выбор МС' },
       { id: VARIANT_FEW_SCROLL, label: '2.1.1 С прокруткой' },
       { id: VARIANT_FEW_PLAIN, label: '2.2 Без выбор МС' },
+      { id: VARIANT_FEW_OUTLINE, label: '2.3.1 С прокруткой' },
     ],
   },
   {

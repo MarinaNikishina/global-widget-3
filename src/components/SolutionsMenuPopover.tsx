@@ -281,6 +281,7 @@ type SolutionsMenuPopoverProps = {
     | 'few'
     | 'few-scroll'
     | 'few-plain'
+    | 'few-outline'
     | 'many'
     | 'many-scroll'
   anchor: HTMLElement | null
@@ -304,7 +305,7 @@ export function SolutionsMenuPopover({
   const [thumb, setThumb] = useState({ height: 0, top: 0 })
   const scrollRef = useRef<HTMLDivElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const picks = layout === 'few' || layout === 'few-scroll' ? FEW_PICKS : PICKS
+  const picks = layout === 'few' || layout === 'few-scroll' || layout === 'few-outline' ? FEW_PICKS : PICKS
   const pick = picks[index % picks.length]
 
   useLayoutEffect(() => {
@@ -350,7 +351,7 @@ export function SolutionsMenuPopover({
 
   useLayoutEffect(() => {
     const node = scrollRef.current
-    if (!node || (layout !== 'categories' && layout !== 'few-scroll' && layout !== 'many-scroll')) return
+    if (!node || (layout !== 'categories' && layout !== 'few-scroll' && layout !== 'few-outline' && layout !== 'many-scroll')) return
     const update = () => {
       const { scrollHeight, clientHeight, scrollTop } = node
       if (scrollHeight <= clientHeight) {
@@ -395,13 +396,13 @@ export function SolutionsMenuPopover({
       ? MANY_INSTALLED_SCROLL
       : layout === 'many'
         ? MANY_INSTALLED
-        : layout === 'few-scroll'
+        : layout === 'few-scroll' || layout === 'few-outline'
           ? INSTALLED_SCROLL
           : layout === 'few-plain'
             ? INSTALLED_TWO
             : INSTALLED
-  const scrolling = layout === 'few-scroll' || layout === 'many-scroll'
-  const showPick = layout === 'few' || layout === 'few-scroll'
+  const scrolling = layout === 'few-scroll' || layout === 'few-outline' || layout === 'many-scroll'
+  const showPick = layout === 'few' || layout === 'few-scroll' || layout === 'few-outline'
   const showFullList = layout === 'many' || layout === 'many-scroll'
 
   const renderInstalled = (apps: InstalledApp[]) => (
@@ -465,10 +466,16 @@ export function SolutionsMenuPopover({
       className={`solutions-popover${
         layout === 'categories' ? ' solutions-popover--categories' : ''
       }${
-        layout === 'few' || layout === 'few-scroll' || layout === 'many' || layout === 'many-scroll'
+        layout === 'few' ||
+        layout === 'few-scroll' ||
+        layout === 'few-outline' ||
+        layout === 'many' ||
+        layout === 'many-scroll'
           ? ' solutions-popover--few'
           : ''
       }${scrolling ? ' solutions-popover--few-scroll' : ''}${
+        layout === 'few-outline' ? ' solutions-popover--outline' : ''
+      }${
         appear ? ' solutions-popover--appear' : ''
       }`}
       style={{ top: pos.top, left: pos.left }}
@@ -575,6 +582,7 @@ export function SolutionsMenuPopover({
       ) : null}
       {layout === 'few' ||
       layout === 'few-scroll' ||
+      layout === 'few-outline' ||
       layout === 'few-plain' ||
       layout === 'many' ||
       layout === 'many-scroll' ? (
