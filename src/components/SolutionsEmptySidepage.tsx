@@ -77,7 +77,7 @@ export function SolutionsEmptySidepage({ isOpen, onClose }: SolutionsEmptySidepa
             <div className="solutions-popover__empty-copy">
               <div className="solutions-popover__empty-text">
                 <p className="solutions-popover__empty-title">
-                  У вас нет активных решений для быстрого доступа
+                  У вас нет решений для быстрого доступа
                 </p>
                 <p className="solutions-popover__empty-desc">
                   Перейдите в каталог для выбора нужного вам решения
